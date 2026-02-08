@@ -210,7 +210,7 @@ class UIManager {
         document.getElementById('cause-effect-summary').innerText = reason;
 
         let html = `
-            <div class="stat-row"><span>Years Survived:</span> <span>${stats.year - 2024}</span></div>
+            <div class="stat-row"><span>Years Survived:</span> <span>${stats.year - 2030}</span></div>
             <div class="stat-row"><span>Final Score:</span> <span>${this.calculateScore(stats)}</span></div>
         `;
         document.getElementById('final-stats').innerHTML = html;
@@ -221,7 +221,7 @@ class UIManager {
     calculateScore(stats) {
         // Simple score: Years * avg metrics
         const avg = (stats.metrics.stability + stats.metrics.economy + stats.metrics.environment + stats.metrics.trust) / 4;
-        return Math.floor((stats.year - 2024) * 100 + avg * 10);
+        return Math.floor((stats.year - 2030) * 100 + avg * 10);
     }
 
     toggleLeaderboard(show) {
