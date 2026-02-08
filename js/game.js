@@ -51,16 +51,25 @@ class GameController {
             btn.innerText = 'AUTHENTICATING...';
             btn.disabled = true;
 
-            const res = await this.auth.login(u, p);
+            try {
+                const res = await this.auth.login(u, p);
 
-            if (res.success) {
-                // If offline mode returns a user directly, trigger success immediately
-                // (Standard Firebase auth waits for onAuthStateChanged, but offline won't fire that)
-                if (res.user) {
-                    this.onLoginSuccess(res.user);
+                if (res.success) {
+                    console.log("Login success:", res);
+                    // If offline mode returns a user directly (or we just want to force a transition)
+                    // (Standard Firebase auth waits for onAuthStateChanged, but offline won't fire that)
+                    if (res.user) {
+                        this.onLoginSuccess(res.user);
+                        if (res.message) alert(res.message); // Notify user if offline/special
+                    }
+                } else {
+                    alert(res.message);
                 }
-            } else {
-                alert(res.message);
+            } catch (err) {
+                console.error("Login Critical Failure:", err);
+                alert("Critical Error: " + err.message);
+            } finally {
+                // ALWAYS reset button
                 btn.innerText = originalText;
                 btn.disabled = false;
             }
@@ -76,12 +85,23 @@ class GameController {
             btn.innerText = 'REGISTERING...';
             btn.disabled = true;
 
-            const res = await this.auth.signup(u, p);
+            try {
+                const res = await this.auth.signup(u, p);
 
-            if (res.success) {
-                if (res.user) this.onLoginSuccess(res.user);
-            } else {
-                alert(res.message);
+                if (res.success) {
+                    console.log("Signup success:", res);
+                    if (res.user) {
+                        this.onLoginSuccess(res.user);
+                        if (res.message) alert(res.message); // Notify user if offline
+                    }
+                } else {
+                    alert(res.message);
+                }
+            } catch (err) {
+                console.error("Signup Critical Failure:", err);
+                alert("Critical Error: " + err.message);
+            } finally {
+                // ALWAYS reset button
                 btn.innerText = originalText;
                 btn.disabled = false;
             }

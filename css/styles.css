@@ -2,15 +2,24 @@
     /* Colors */
     --bg-color: #050505;
     --primary-cyan: #00f3ff;
-    --primary-purple: #bc13fe;
+    --secondary-purple: #bc13fe;
+    /* Changed from --primary-purple */
     --primary-red: #ff003c;
     --primary-yellow: #ffcc00;
-    --alert-red: #ff003c;
+    --alert-red: #ff2a2a;
+    /* Changed value */
     --success-green: #00ff9d;
-    --text-main: #ffffff;
-    --text-dim: #a0a0a0;
-    --glass-bg: rgba(20, 20, 25, 0.7);
+    --warn-yellow: #ffcc00;
+    /* Added */
+    --text-main: #e0e0e0;
+    /* Changed value */
+    --text-dim: #888;
+    /* Changed value */
+    --glass-bg: rgba(20, 20, 30, 0.7);
+    /* Changed value */
     --glass-border: rgba(255, 255, 255, 0.1);
+    --bg-dark: #0a0a12;
+    /* Added */
 
     /* Fonts */
     --font-header: 'Orbitron', sans-serif;

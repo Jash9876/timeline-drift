@@ -2,21 +2,34 @@ class AuthSystem {
     constructor() {
         this.currentUser = null;
         this.onUserChangeCallback = null;
+        this.checkConnection(); // Initial check
 
         // Listen for auth state changes
         auth.onAuthStateChanged((user) => {
             if (user) {
                 // Fetch extra user data from Firestore
-                db.collection('users').doc(user.uid).get().then((doc) => {
-                    if (doc.exists) {
+                this.withTimeout(
+                    db.collection('users').doc(user.uid).get(),
+                    5000 // 5s timeout for user data
+                ).then((doc) => {
+                    if (doc && doc.exists) {
                         this.currentUser = doc.data();
                         this.currentUser.uid = user.uid; // Store UID
                         console.log('Auth: User loaded', this.currentUser);
+                        this.updateConnectionStatus(true);
                         if (this.onUserChangeCallback) this.onUserChangeCallback(this.currentUser);
                     } else {
-                        // Rare case: Auth exists but DB doc missing
-                        console.error('Auth: User authenticated but no DB record found.');
+                        // Rare case: Auth exists but DB doc missing via timeout or actual missing
+                        console.warn('Auth: User authenticated but DB record missing or timed out.');
+                        // Still allow play, maybe create basic user?
+                        this.currentUser = { uid: user.uid, username: user.email ? user.email.split('@')[0] : 'Agent' };
+                        if (this.onUserChangeCallback) this.onUserChangeCallback(this.currentUser);
                     }
+                }).catch(err => {
+                    console.error("Auth: Failed to load user profile (Offline?)", err);
+                    // Fallback to basic auth user if DB fails
+                    this.currentUser = { uid: user.uid, username: user.email ? user.email.split('@')[0] : 'Agent', isOffline: true };
+                    if (this.onUserChangeCallback) this.onUserChangeCallback(this.currentUser);
                 });
             } else {
                 this.currentUser = null;
@@ -24,6 +37,30 @@ class AuthSystem {
                 if (this.onUserChangeCallback) this.onUserChangeCallback(null);
             }
         });
+
+        // Periodic connection check
+        setInterval(() => this.checkConnection(), 30000);
+    }
+
+    // Diagnostic: Check if we can reach Google
+    async checkConnection() {
+        const statusEl = document.getElementById('connection-status');
+        if (!statusEl) return;
+
+        try {
+            await fetch('https://www.google.com/favicon.ico', { mode: 'no-cors', cache: 'no-store' });
+            this.updateConnectionStatus(true);
+        } catch (e) {
+            this.updateConnectionStatus(false);
+        }
+    }
+
+    updateConnectionStatus(isOnline) {
+        const statusEl = document.getElementById('connection-status');
+        if (statusEl) {
+            statusEl.innerText = isOnline ? 'Neural Link: ACTIVE' : 'Neural Link: OFFLINE (Local Mode)';
+            statusEl.className = 'connection-status ' + (isOnline ? 'online' : 'offline');
+        }
     }
 
     // Callback to update UI when auth state resolves
@@ -33,6 +70,7 @@ class AuthSystem {
 
     // Helper: Create offline session
     createOfflineSession(username) {
+        console.log("Auth: Creating Offline Session for", username);
         const offlineUser = {
             username: username,
             uid: 'offline_' + Date.now(),
@@ -44,7 +82,8 @@ class AuthSystem {
         this.currentUser = offlineUser;
         // Save to local storage for persistence across reloads (offline mode)
         localStorage.setItem('timeline_offline_user', JSON.stringify(offlineUser));
-        return { success: true, user: offlineUser, message: 'Network offline. Playing in Guest Mode.' };
+        this.updateConnectionStatus(false);
+        return { success: true, user: offlineUser, message: 'Network disconnected. Playing in Guest Mode (Offline).' };
     }
 
     // Helper: Fake email generator for username-based login
@@ -53,14 +92,15 @@ class AuthSystem {
     }
 
     // Helper: Timeout wrapper
-    withTimeout(promise, ms = 10000) {
+    withTimeout(promise, ms = 5000) {
         return Promise.race([
             promise,
-            new Promise((_, reject) => setTimeout(() => reject(new Error('Network timeout. Check connection.')), ms))
+            new Promise((_, reject) => setTimeout(() => reject(new Error('Network timeout')), ms))
         ]);
     }
 
     async signup(username, password) {
+        console.log("Auth: Attempting signup for", username);
         // FAST FAIL: Client-side validation to avoid network noise
         if (password.length < 6) {
             return { success: false, message: 'Passcode too short (min 6 chars).' };
@@ -70,7 +110,8 @@ class AuthSystem {
         try {
             // 1. Create Auth User (with timeout)
             const userCredential = await this.withTimeout(
-                auth.createUserWithEmailAndPassword(email, password)
+                auth.createUserWithEmailAndPassword(email, password),
+                8000 // 8s timeout for auth
             );
             const user = userCredential.user;
 
@@ -82,22 +123,25 @@ class AuthSystem {
                 joined: new Date().toISOString()
             };
 
-            try {
-                await this.withTimeout(
-                    db.collection('users').doc(user.uid).set(newUser),
-                    5000
-                );
-            } catch (dbError) {
-                console.warn("Auth: DB write timed out. Continuing offline.", dbError);
-            }
+            // Attempt DB write, but don't fail signup if it fails (just go offline-ish)
+            this.withTimeout(
+                db.collection('users').doc(user.uid).set(newUser),
+                3000
+            ).catch(dbError => {
+                console.warn("Auth: DB write timed out. Continuing...", dbError);
+            });
 
             this.currentUser = { ...newUser, uid: user.uid };
+            this.updateConnectionStatus(true);
             return { success: true, user: this.currentUser };
 
         } catch (error) {
             console.error("Signup Error:", error);
             // FAIL-SAFE: If offline, allow play anyway
-            if (error.code === 'auth/network-request-failed' || error.message.includes('timeout')) {
+            if (error.code === 'auth/network-request-failed' ||
+                error.message.includes('timeout') ||
+                error.message.includes('network') ||
+                !navigator.onLine) {
                 return this.createOfflineSession(username);
             }
 
@@ -110,24 +154,36 @@ class AuthSystem {
 
     // Login existing user
     async login(username, password) {
+        console.log("Auth: Attempting login for", username);
         const email = this.getEmail(username);
         try {
             await this.withTimeout(
-                auth.signInWithEmailAndPassword(email, password)
+                auth.signInWithEmailAndPassword(email, password),
+                8000
             );
+            this.updateConnectionStatus(true);
             // currentUser will be set by onAuthStateChanged listener
             return { success: true };
         } catch (error) {
             console.error("Login Error:", error);
+
             // FAIL-SAFE: If offline, allow play anyway
-            if (error.code === 'auth/network-request-failed' || error.message.includes('timeout')) {
+            if (error.code === 'auth/network-request-failed' ||
+                error.message.includes('timeout') ||
+                error.message.includes('network') ||
+                !navigator.onLine) {
+
                 // Try to recover last offline session or create new
                 const saved = localStorage.getItem('timeline_offline_user');
                 if (saved) {
-                    this.currentUser = JSON.parse(saved);
-                    if (this.currentUser.username === username) {
-                        return { success: true, user: this.currentUser, message: 'Offline. Loaded local profile.' };
-                    }
+                    try {
+                        const savedUser = JSON.parse(saved);
+                        if (savedUser.username === username) {
+                            this.currentUser = savedUser;
+                            this.updateConnectionStatus(false);
+                            return { success: true, user: this.currentUser, message: 'Offline. Loaded local profile.' };
+                        }
+                    } catch (e) { console.error("Corrupt local save", e); }
                 }
                 return this.createOfflineSession(username);
             }
