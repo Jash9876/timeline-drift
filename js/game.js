@@ -187,6 +187,7 @@ class GameController {
     startGame() {
         this.engine.reset();
         this.visualizer.reset();
+        this.visualizer.stopAnimation(); // Save resources during gameplay
 
         // Reset city state (clear fires, particles)
         if (this.ui.cityRenderer) {
@@ -283,6 +284,7 @@ class GameController {
 
         const finalScore = this.ui.showGameOver(stats, reason);
         this.auth.updateStats(finalScore);
+        this.visualizer.startAnimation(); // Show graph only on screen
     }
 }
 

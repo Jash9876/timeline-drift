@@ -12,7 +12,7 @@ class Visualizer {
         // Initial node
         this.addNode(0, 50, 'start');
 
-        this.startAnimation();
+        // this.startAnimation(); // Controlled by GameController now
     }
 
     resize() {
@@ -112,11 +112,18 @@ class Visualizer {
     }
 
     startAnimation() {
+        if (this.running) return;
+        this.running = true;
         const animate = () => {
+            if (!this.running) return;
             this.draw();
             requestAnimationFrame(animate);
         };
         animate();
+    }
+
+    stopAnimation() {
+        this.running = false;
     }
 
     reset() {

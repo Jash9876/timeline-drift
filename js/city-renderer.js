@@ -81,6 +81,9 @@ class CityRenderer {
 
         this.canvas.width = this.renderWidth;
 
+        // Mobile Optimization Check
+        this.isMobile = window.innerWidth < 768;
+
         // Only re-init if we have valid dimensions
         if (this.renderWidth > 0) {
             this.initCity(); // Re-distribute buildings/stars for new width
@@ -197,12 +200,16 @@ class CityRenderer {
     advanceTurn() {
         // Use targetMetrics for immediate response (not lerped metrics)
         const stability = this.targetMetrics.stability;
+
+        // Optimize: Reduce fire spread on mobile
+        const effectiveStability = this.isMobile ? (stability + 20) : stability;
+
         let targetFireCount = 0;
 
         // Stability Threshold Logic
-        if (stability > 40) {
+        if (effectiveStability > 40) {
             targetFireCount = 0;
-        } else if (stability > 30) {
+        } else if (effectiveStability > 30) {
             targetFireCount = 1 + Math.floor(Math.random() * 2); // 1-2
         } else if (stability > 20) {
             targetFireCount = 3 + Math.floor(Math.random() * 2); // 3-4
@@ -668,13 +675,15 @@ class CityRenderer {
                     if (Math.random() < 0.8 * b.fireIntensity) {
                         const flicker = Math.random() > 0.5 ? '#ffaa00' : '#ff4400';
                         this.ctx.fillStyle = flicker;
-                        // Add bloom
-                        this.ctx.save();
-                        this.ctx.globalCompositeOperation = 'screen';
-                        this.ctx.globalAlpha = 0.5 * b.fireIntensity;
-                        this.ctx.fillStyle = '#ff8800';
-                        this.ctx.fillRect(b.x + w.x - 2, b.y - b.h + w.y - 2, w.w + 4, w.h + 4);
-                        this.ctx.restore();
+                        // Add bloom (DESKTOP ONLY)
+                        if (!this.isMobile) {
+                            this.ctx.save();
+                            this.ctx.globalCompositeOperation = 'screen';
+                            this.ctx.globalAlpha = 0.5 * b.fireIntensity;
+                            this.ctx.fillStyle = '#ff8800';
+                            this.ctx.fillRect(b.x + w.x - 2, b.y - b.h + w.y - 2, w.w + 4, w.h + 4);
+                            this.ctx.restore();
+                        }
                     } else {
                         this.ctx.fillStyle = '#1a0505'; // Burnt out
                     }
