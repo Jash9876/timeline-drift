@@ -1520,3 +1520,160 @@ canvas {
 .how-to-play-content::-webkit-scrollbar-thumb:hover {
     background: var(--primary-purple);
 }
+/* --- RESPONSIVE DESIGN --- */
+
+/* Medium Screens (Laptops under 1200px) */
+@media (max-width: 1200px) {
+    .hud-header {
+        padding: 0.5rem 1rem;
+    }
+
+    .metric-container {
+        gap: 1rem;
+    }
+
+    .metric {
+        width: 80px;
+    }
+
+    #current-card {
+        width: 90%;
+        max-width: 600px;
+        padding: 1.5rem;
+    }
+
+    #scanner-overlay,
+    #recovery-overlay,
+    #crisis-overlay {
+        width: 300px;
+    }
+
+    .icon-btn {
+        width: 45px;
+        height: 45px;
+        font-size: 1.3rem;
+    }
+}
+
+/* Small Screens (Small Laptops/Tablets under 900px) */
+@media (max-width: 900px) {
+    h1 {
+        font-size: 2.5rem;
+    }
+
+    .auth-panel {
+        width: 90%;
+        max-width: 380px;
+    }
+
+    .hud-header {
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
+        background: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(5px);
+    }
+
+    .year-display {
+        font-size: 1.2rem;
+    }
+
+    /* Adjust Overlays to not block buttons */
+    #scanner-overlay,
+    #recovery-overlay {
+        left: 1rem;
+        bottom: 5rem;
+        /* Push up above buttons */
+        top: auto;
+        transform: translateY(0);
+        max-height: 60vh;
+        overflow-y: auto;
+    }
+    
+    #scanner-overlay.hidden,
+    #recovery-overlay.hidden {
+        transform: translateY(20px); /* Slide down when hidden */
+    }
+
+    #crisis-overlay {
+        right: 1rem;
+        bottom: 5rem;
+        top: auto;
+        transform: translateY(0);
+        max-height: 60vh;
+        overflow-y: auto;
+    }
+    
+    #crisis-overlay.hidden {
+        transform: translateY(20px);
+    }
+
+    /* Shrink card further */
+    #current-card {
+        margin-bottom: 4rem; /* Lift up from bottom buttons */
+    }
+
+    #card-title {
+        font-size: 1.2rem;
+        margin-bottom: 1rem;
+    }
+
+    #card-desc {
+        font-size: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .choices {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .choice-btn {
+        width: 100%;
+    }
+}
+
+/* Mobile Screens (Under 600px) */
+@media (max-width: 600px) {
+    .metric-container {
+        gap: 0.5rem;
+    }
+
+    .metric {
+        width: 60px;
+    }
+
+    .metric .label {
+        font-size: 0.5rem;
+    }
+
+    .metric .value {
+        font-size: 0.8rem;
+    }
+
+    #current-card {
+        bottom: 5rem; /* More clearance */
+        padding: 1rem;
+    }
+
+    .icon-btn {
+        width: 40px;
+        height: 40px;
+        bottom: 1rem;
+    }
+
+    #scan-btn { left: 1rem; }
+    #recovery-btn { left: 4rem; } /* Tighter grouping */
+    #crisis-btn { right: 4rem; }
+    #mute-btn { right: 1rem; }
+
+    /* Make overlays full width but short */
+    #scanner-overlay,
+    #recovery-overlay,
+    #crisis-overlay {
+        width: calc(100% - 2rem);
+        left: 1rem;
+        right: 1rem;
+        bottom: 4.5rem; /* Above icons */
+    }
+}
