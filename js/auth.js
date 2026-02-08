@@ -36,15 +36,25 @@ class AuthSystem {
         return `${username.toLowerCase()}@timeline-drift.game`;
     }
 
+    // Helper: Timeout wrapper
+    withTimeout(promise, ms = 10000) {
+        return Promise.race([
+            promise,
+            new Promise((_, reject) => setTimeout(() => reject(new Error('Network timeout. Check connection.')), ms))
+        ]);
+    }
+
     // Register a new user
     async signup(username, password) {
         const email = this.getEmail(username);
         try {
-            // 1. Create Auth User
-            const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+            // 1. Create Auth User (with timeout)
+            const userCredential = await this.withTimeout(
+                auth.createUserWithEmailAndPassword(email, password)
+            );
             const user = userCredential.user;
 
-            // 2. Create Firestore Document
+            // 2. Create Firestore Document (Optimistic: don't block UI if this part hangs)
             const newUser = {
                 username: username,
                 highScore: 0,
@@ -52,7 +62,17 @@ class AuthSystem {
                 joined: new Date().toISOString()
             };
 
-            await db.collection('users').doc(user.uid).set(newUser);
+            // We await this but catch errors specifically for it so we can still log the user in
+            // if the DB write fails/hangs (common in poor network conditions)
+            try {
+                await this.withTimeout(
+                    db.collection('users').doc(user.uid).set(newUser),
+                    5000 // Shorter timeout for DB
+                );
+            } catch (dbError) {
+                console.warn("Auth: DB write timed out or failed. Continuing mostly offline.", dbError);
+                // Proceed anyway, the Auth part succeeded.
+            }
 
             this.currentUser = { ...newUser, uid: user.uid };
             return { success: true, user: this.currentUser };
@@ -61,6 +81,7 @@ class AuthSystem {
             console.error("Signup Error:", error);
             let msg = error.message;
             if (error.code === 'auth/email-already-in-use') msg = 'Agent ID already taken.';
+            if (error.message.includes('timeout')) msg = 'Connection timed out. Check internet.';
             return { success: false, message: msg };
         }
     }
@@ -69,12 +90,18 @@ class AuthSystem {
     async login(username, password) {
         const email = this.getEmail(username);
         try {
-            await auth.signInWithEmailAndPassword(email, password);
+            await this.withTimeout(
+                auth.signInWithEmailAndPassword(email, password)
+            );
             // currentUser will be set by onAuthStateChanged listener
             return { success: true };
         } catch (error) {
             console.error("Login Error:", error);
-            return { success: false, message: 'Invalid credentials.' };
+            let msg = 'Invalid credentials.';
+            if (error.message.includes('timeout') || error.code === 'auth/network-request-failed') {
+                msg = 'Network error. Check connection.';
+            }
+            return { success: false, message: msg };
         }
     }
 
