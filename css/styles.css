@@ -1164,6 +1164,9 @@ canvas {
     transform: translateY(-50%) translateX(0);
     width: 350px;
     z-index: 1000;
+    transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.4, 0.0, 0.2, 1), visibility 0.3s;
+    opacity: 1;
+    visibility: visible;
 }
 
 #scanner-overlay.hidden {
@@ -1194,6 +1197,9 @@ canvas {
     transform: translateY(-50%) translateX(0);
     width: 350px;
     z-index: 1000;
+    transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.4, 0.0, 0.2, 1), visibility 0.3s;
+    opacity: 1;
+    visibility: visible;
 }
 
 #recovery-overlay.hidden {
