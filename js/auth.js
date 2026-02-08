@@ -31,6 +31,22 @@ class AuthSystem {
         this.onUserChangeCallback = callback;
     }
 
+    // Helper: Create offline session
+    createOfflineSession(username) {
+        const offlineUser = {
+            username: username,
+            uid: 'offline_' + Date.now(),
+            highScore: 0,
+            gamesPlayed: 0,
+            joined: new Date().toISOString(),
+            isOffline: true
+        };
+        this.currentUser = offlineUser;
+        // Save to local storage for persistence across reloads (offline mode)
+        localStorage.setItem('timeline_offline_user', JSON.stringify(offlineUser));
+        return { success: true, user: offlineUser, message: 'Network offline. Playing in Guest Mode.' };
+    }
+
     // Helper: Fake email generator for username-based login
     getEmail(username) {
         return `${username.toLowerCase()}@timeline-drift.game`;
@@ -54,7 +70,7 @@ class AuthSystem {
             );
             const user = userCredential.user;
 
-            // 2. Create Firestore Document (Optimistic: don't block UI if this part hangs)
+            // 2. Create Firestore Document (Optimistic)
             const newUser = {
                 username: username,
                 highScore: 0,
@@ -62,16 +78,13 @@ class AuthSystem {
                 joined: new Date().toISOString()
             };
 
-            // We await this but catch errors specifically for it so we can still log the user in
-            // if the DB write fails/hangs (common in poor network conditions)
             try {
                 await this.withTimeout(
                     db.collection('users').doc(user.uid).set(newUser),
-                    5000 // Shorter timeout for DB
+                    5000
                 );
             } catch (dbError) {
-                console.warn("Auth: DB write timed out or failed. Continuing mostly offline.", dbError);
-                // Proceed anyway, the Auth part succeeded.
+                console.warn("Auth: DB write timed out. Continuing offline.", dbError);
             }
 
             this.currentUser = { ...newUser, uid: user.uid };
@@ -79,9 +92,13 @@ class AuthSystem {
 
         } catch (error) {
             console.error("Signup Error:", error);
+            // FAIL-SAFE: If offline, allow play anyway
+            if (error.code === 'auth/network-request-failed' || error.message.includes('timeout')) {
+                return this.createOfflineSession(username);
+            }
+
             let msg = error.message;
             if (error.code === 'auth/email-already-in-use') msg = 'Agent ID already taken.';
-            if (error.message.includes('timeout')) msg = 'Connection timed out. Check internet.';
             return { success: false, message: msg };
         }
     }
@@ -97,24 +114,48 @@ class AuthSystem {
             return { success: true };
         } catch (error) {
             console.error("Login Error:", error);
-            let msg = 'Invalid credentials.';
-            if (error.message.includes('timeout') || error.code === 'auth/network-request-failed') {
-                msg = 'Network error. Check connection.';
+            // FAIL-SAFE: If offline, allow play anyway
+            if (error.code === 'auth/network-request-failed' || error.message.includes('timeout')) {
+                // Try to recover last offline session or create new
+                const saved = localStorage.getItem('timeline_offline_user');
+                if (saved) {
+                    this.currentUser = JSON.parse(saved);
+                    if (this.currentUser.username === username) {
+                        return { success: true, user: this.currentUser, message: 'Offline. Loaded local profile.' };
+                    }
+                }
+                return this.createOfflineSession(username);
             }
-            return { success: false, message: msg };
+            return { success: false, message: 'Invalid credentials.' };
         }
     }
 
     // Logout
     async logout() {
-        await auth.signOut();
+        if (this.currentUser && this.currentUser.isOffline) {
+            this.currentUser = null;
+            // Optional: clear offline data? No, keep it.
+        } else {
+            await auth.signOut();
+        }
         // Listener nulls currentUser
     }
 
-    // Update user stats in Firestore
+    // Update user stats in Firestore or Local
     async updateStats(score) {
-        if (!this.currentUser || !this.currentUser.uid) return;
+        if (!this.currentUser) return;
 
+        // Offline Path
+        if (this.currentUser.isOffline) {
+            this.currentUser.gamesPlayed++;
+            this.currentUser.highScore = Math.max(this.currentUser.highScore, score);
+            localStorage.setItem('timeline_offline_user', JSON.stringify(this.currentUser));
+            console.log('Stats saved locally (Offline Mode).');
+            return;
+        }
+
+        // Online Path
+        if (!this.currentUser.uid) return;
         const userRef = db.collection('users').doc(this.currentUser.uid);
 
         try {
