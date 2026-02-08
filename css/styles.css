@@ -1714,3 +1714,35 @@ canvas {
         /* Above icons */
     }
 }
+
+/* --- MOBILE POLISH (Card, HUD, Game Over) --- */
+
+@media (max-width: 600px) {
+    /* Better Card Sizing */
+    #current-card {
+        width: 90%;
+        max-width: 600px;
+        max-height: 55vh; /* Prevent covering HUD or buttons */
+        overflow-y: auto;
+        padding: 1rem;
+        padding-bottom: 2rem;
+    }
+
+    /* Evenly Spaced Metrics */
+    .metric-container {
+        width: 100%;
+        justify-content: space-evenly;
+        gap: 0;
+    }
+
+    /* Responsive Game Over Screen */
+    #game-over-screen .glass-panel {
+        max-height: 80vh;
+        overflow-y: auto;
+        width: 90%;
+    }
+    
+    #game-over-screen h1 {
+        font-size: 2rem;
+    }
+}
