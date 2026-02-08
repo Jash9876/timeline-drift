@@ -72,19 +72,15 @@ html {
     left: 0;
     width: 100%;
     height: 100%;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
     z-index: -3;
-    overflow: hidden;
-    /* Center the canvas */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-#bg-layer canvas {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    image-rendering: pixelated;
+    transition: background-image 1s ease-in-out;
+    opacity: 0.4;
+    /* Keep it dark for readability */
+    /* Default fallback gradient */
+    background: radial-gradient(circle at center, #1a1a2e 0%, #000000 100%);
 }
 
 #noise-overlay {
@@ -808,10 +804,12 @@ canvas {
 
 /* --- Decision Card --- */
 #decision-area {
-    position: fixed;
+    position: absolute;
     bottom: 3rem;
     left: 0;
     right: 0;
+    display: flex;
+    justify-content: center;
     z-index: 30;
     pointer-events: none;
 }
@@ -819,7 +817,7 @@ canvas {
 #current-card {
     width: 650px;
     max-width: calc(100% - 2rem);
-    margin: 0 auto;
+    flex-shrink: 0;
     transform: translateY(0);
     transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     background: rgba(10, 10, 15, 0.85);
