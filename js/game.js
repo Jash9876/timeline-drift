@@ -13,6 +13,15 @@ class GameController {
         this.initEventListeners();
         this.checkAuth();
         this.enableAudioOnInteraction(); // Start music on first click/type
+
+        // Mobile BG Safety Check: Force a resize/init after a short delay
+        // This fixes the "black background" issue where the canvas might init with 0 width
+        setTimeout(() => {
+            if (this.ui && this.ui.cityRenderer) {
+                console.log("GameController: Force-checking background dimensions...");
+                this.ui.cityRenderer.resize();
+            }
+        }, 500);
     }
 
     // Enable audio context on first user gesture (fix for autoplay policy)
