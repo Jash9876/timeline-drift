@@ -7,6 +7,7 @@ class SoundManager {
 
         // Ambient music (Hosted on GitHub LFS to bypass Vercel 100MB limit)
         this.ambientAudio = new Audio('https://media.githubusercontent.com/media/Jash9876/timeline-drift/main/audio/ambient.webm');
+        this.ambientAudio.crossOrigin = 'anonymous'; // Fix CORS for external hosting
         this.ambientAudio.loop = true;
         this.ambientAudio.volume = 0.4;
         this.ambientSource = null;
