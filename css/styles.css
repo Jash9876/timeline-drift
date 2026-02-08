@@ -33,8 +33,10 @@ body {
     color: var(--text-main);
     font-family: var(--font-body);
     overflow: hidden;
-    height: 100vh;
     width: 100vw;
+    /* Mobile Viewport Fix */
+    height: 100vh;
+    height: 100dvh;
 }
 
 /* --- Background Texture & Grid --- */
@@ -1100,6 +1102,7 @@ canvas {
 .icon-btn {
     position: fixed;
     bottom: 2rem;
+    bottom: calc(2rem + env(safe-area-inset-bottom));
     right: 2rem;
     z-index: 1000;
     background: rgba(0, 0, 0, 0.5);
@@ -1135,6 +1138,7 @@ canvas {
     left: 2rem;
     right: auto;
     bottom: 2rem;
+    bottom: calc(2rem + env(safe-area-inset-bottom));
 }
 
 #recovery-btn {
@@ -1142,17 +1146,20 @@ canvas {
     /* Next to scanner button */
     right: auto;
     bottom: 2rem;
+    bottom: calc(2rem + env(safe-area-inset-bottom));
 }
 
 #crisis-btn {
     right: 6rem;
     /* Next to mute button */
     bottom: 2rem;
+    bottom: calc(2rem + env(safe-area-inset-bottom));
 }
 
 #mute-btn {
     right: 2rem;
     bottom: 2rem;
+    bottom: calc(2rem + env(safe-area-inset-bottom));
 }
 
 
@@ -1520,6 +1527,7 @@ canvas {
 .how-to-play-content::-webkit-scrollbar-thumb:hover {
     background: var(--primary-purple);
 }
+
 /* --- RESPONSIVE DESIGN --- */
 
 /* Medium Screens (Laptops under 1200px) */
@@ -1589,10 +1597,11 @@ canvas {
         max-height: 60vh;
         overflow-y: auto;
     }
-    
+
     #scanner-overlay.hidden,
     #recovery-overlay.hidden {
-        transform: translateY(20px); /* Slide down when hidden */
+        transform: translateY(20px);
+        /* Slide down when hidden */
     }
 
     #crisis-overlay {
@@ -1603,14 +1612,15 @@ canvas {
         max-height: 60vh;
         overflow-y: auto;
     }
-    
+
     #crisis-overlay.hidden {
         transform: translateY(20px);
     }
 
     /* Shrink card further */
     #current-card {
-        margin-bottom: 4rem; /* Lift up from bottom buttons */
+        margin-bottom: 4rem;
+        /* Lift up from bottom buttons */
     }
 
     #card-title {
@@ -1652,7 +1662,8 @@ canvas {
     }
 
     #current-card {
-        bottom: 5rem; /* More clearance */
+        bottom: 5rem;
+        /* More clearance */
         padding: 1rem;
     }
 
@@ -1660,12 +1671,25 @@ canvas {
         width: 40px;
         height: 40px;
         bottom: 1rem;
+        bottom: calc(1rem + env(safe-area-inset-bottom));
     }
 
-    #scan-btn { left: 1rem; }
-    #recovery-btn { left: 4rem; } /* Tighter grouping */
-    #crisis-btn { right: 4rem; }
-    #mute-btn { right: 1rem; }
+    #scan-btn {
+        left: 1rem;
+    }
+
+    #recovery-btn {
+        left: 4rem;
+    }
+
+    /* Tighter grouping */
+    #crisis-btn {
+        right: 4rem;
+    }
+
+    #mute-btn {
+        right: 1rem;
+    }
 
     /* Make overlays full width but short */
     #scanner-overlay,
@@ -1674,6 +1698,7 @@ canvas {
         width: calc(100% - 2rem);
         left: 1rem;
         right: 1rem;
-        bottom: 4.5rem; /* Above icons */
+        bottom: 4.5rem;
+        /* Above icons */
     }
 }
