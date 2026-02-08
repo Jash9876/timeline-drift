@@ -1,0 +1,9 @@
+{
+  "name": "timeline-drift",
+  "version": 2,
+  "cleanUrls": true,
+  "framework": null,
+  "routes": [
+    { "src": "/(.*)", "dest": "/$1" }
+  ]
+}

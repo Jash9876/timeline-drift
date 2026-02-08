@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Timeline Drift</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Space+Grotesk:wght@300;400;500;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+    <div id="app">
+        <!-- Background Animation Layer -->
+        <div id="bg-layer"></div>
+        <div id="noise-overlay"></div>
+        <div id="grid-overlay"></div>
+
+        <!-- Left Side Controls -->
+        <button id="scan-btn" class="icon-btn" aria-label="Toggle Scanner">📟</button>
+        <button id="recovery-btn" class="icon-btn recovery-btn" aria-label="Recovery Events">❤️‍🩹</button>
+
+        <!-- Right Side Controls -->
+        <button id="crisis-btn" class="icon-btn warning-btn" aria-label="Crisis Database">⚠️</button>
+        <button id="mute-btn" class="icon-btn" aria-label="Toggle Sound">🔊</button>
+
+        <!-- Scanner Overlay -->
+        <div id="scanner-overlay" class="hidden">
+            <div class="scanner-content glass-panel">
+                <h2 class="scanner-title">CITY SCANNER_V1.0</h2>
+                <ul class="scanner-list">
+                    <!-- STABILITY -->
+                    <li class="header">STABILITY</li>
+                    <li><span class="icon">🔥</span> <span class="label">FIRE / SMOKE</span> <span
+                            class="arrow">→</span> <span class="value crit">LOW</span></li>
+                    <li><span class="icon">🌊</span> <span class="label">HIGH TIDES</span> <span class="arrow">→</span>
+                        <span class="value crit">LOW</span>
+                    </li>
+
+                    <!-- ECONOMY -->
+                    <li class="header">ECONOMY</li>
+                    <li><span class="icon">🌃</span> <span class="label">BLACKOUTS</span> <span class="arrow">→</span>
+                        <span class="value crit">LOW</span>
+                    </li>
+                    <li><span class="icon">🏢</span> <span class="label">NEON LIGHTS</span> <span class="arrow">→</span>
+                        <span class="value good">HIGH</span>
+                    </li>
+                    <li><span class="icon">🚛</span> <span class="label">HEAVY TRAFFIC</span> <span
+                            class="arrow">→</span> <span class="value good">HIGH</span></li>
+
+                    <!-- ECO-SYS -->
+                    <li class="header">ECO-SYS</li>
+                    <li><span class="icon">🤢</span> <span class="label">TOXIC SKY</span> <span class="arrow">→</span>
+                        <span class="value crit">LOW</span>
+                    </li>
+                    <li><span class="icon">🌟</span> <span class="label">VISIBLE STARS</span> <span
+                            class="arrow">→</span> <span class="value good">HIGH</span></li>
+
+                    <!-- TRUST -->
+                    <li class="header">TRUST</li>
+                    <li><span class="icon">🔦</span> <span class="label">SEARCHLIGHTS</span> <span
+                            class="arrow">→</span> <span class="value crit">LOW</span></li>
+                    <li><span class="icon">🚓</span> <span class="label">POLICE PATROLS</span> <span
+                            class="arrow">→</span> <span class="value crit">LOW</span></li>
+
+                    <!-- EVENTS -->
+                    <li class="separator"></li>
+                    <li><span class="icon">🚒</span> <span class="label">FIRE RESPONSE</span> <span
+                            class="arrow">→</span> <span class="value warn">ACTIVE HAZARD</span></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Crisis Database Overlay -->
+        <div id="crisis-overlay" class="hidden">
+            <div class="scanner-content glass-panel" style="border-color: var(--alert-red);">
+                <h2 class="scanner-title" style="color: var(--alert-red); border-color: rgba(255, 0, 60, 0.3);">DRIFT
+                    PREDICTION_DB</h2>
+                <ul class="scanner-list">
+                    <li class="header" style="color: var(--alert-red); border-color: rgba(255, 0, 60, 0.2);">ANOMALY
+                        TRIGGERS</li>
+
+                    <li><span class="icon">☀️</span> <span class="label">SOLAR FLARE</span> <span class="arrow">@</span>
+                        <span class="value crit">&lt; 30% STABILITY</span>
+                    </li>
+                    <li><span class="icon">⚡</span> <span class="label">GRID BLACKOUT</span> <span
+                            class="arrow">@</span> <span class="value crit">&lt; 30% ECONOMY</span></li>
+                    <li><span class="icon">🧪</span> <span class="label">ACID RAIN</span> <span class="arrow">@</span>
+                        <span class="value crit">&lt; 30% ECO-SYS</span>
+                    </li>
+                    <li><span class="icon">👾</span> <span class="label">REALITY GLITCH</span> <span
+                            class="arrow">@</span> <span class="value crit">&lt; 30% TRUST</span></li>
+
+                    <li class="separator"></li>
+                    <li><span class="icon">⏳</span> <span class="label">TIMELINE DRIFT</span> <span
+                            class="arrow">→</span> <span class="value warn">PERMANENT</span></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Recovery Events Panel -->
+        <div id="recovery-overlay" class="hidden">
+            <div class="scanner-content glass-panel" style="border-color: var(--success-green);">
+                <h2 class="scanner-title" style="color: var(--success-green); border-color: rgba(0, 255, 150, 0.3);">
+                    RECOVERY
+                    OPPORTUNITIES</h2>
+                <ul class="scanner-list">
+                    <li class="header" style="color: var(--success-green); border-color: rgba(0, 255, 150, 0.2);">
+                        POSITIVE
+                        EVENTS</li>
+
+                    <li><span class="icon">📈</span> <span class="label">ECONOMIC BOOM</span> <span
+                            class="arrow">@</span>
+                        <span class="value good">&lt; 40% ECONOMY</span>
+                    </li>
+                    <li><span class="icon">🤝</span> <span class="label">COMMUNITY INITIATIVE</span> <span
+                            class="arrow">@</span> <span class="value good">&lt; 40% TRUST</span></li>
+                    <li><span class="icon">🌱</span> <span class="label">ENVIRONMENTAL WIN</span> <span
+                            class="arrow">@</span>
+                        <span class="value good">&lt; 40% ECO-SYS</span>
+                    </li>
+                    <li><span class="icon">💡</span> <span class="label">TECH BREAKTHROUGH</span> <span
+                            class="arrow">@</span> <span class="value good">&lt; 45% ECON/ECO</span></li>
+                    <li><span class="icon">🕊️</span> <span class="label">DIPLOMATIC SUCCESS</span> <span
+                            class="arrow">@</span> <span class="value good">&lt; 45% TRUST/STAB</span></li>
+
+                    <li class="separator"></li>
+                    <li><span class="icon">⏳</span> <span class="label">RECOVERY CHANCE</span> <span
+                            class="arrow">→</span> <span class="value warn">WHEN STRUGGLING</span></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Auth Overlay -->
+        <div id="auth-overlay" class="overlay active">
+            <div class="glass-panel auth-panel">
+                <h1 class="logo glow-text">TIMELINE DRIFT</h1>
+                <p class="subtitle">Secure connection required...</p>
+
+                <div class="auth-forms">
+                    <form id="login-form">
+                        <h2>Identify</h2>
+                        <div class="input-group">
+                            <label>Agent ID</label>
+                            <input type="text" id="login-username" required autocomplete="off" placeholder="Enter ID">
+                        </div>
+                        <div class="input-group">
+                            <label>Passcode</label>
+                            <input type="password" id="login-password" required placeholder="••••••">
+                        </div>
+                        <button type="submit" class="btn big-btn pulse-glow" style="width: 100%;">Initialize
+                            Session</button>
+                        <p class="switch-auth">New Agent? <span id="to-signup">Sign Up</span></p>
+                    </form>
+
+                    <form id="signup-form" class="hidden">
+                        <h2>Register</h2>
+                        <div class="input-group">
+                            <label>New Agent ID</label>
+                            <input type="text" id="signup-username" required autocomplete="off" placeholder="Create ID">
+                        </div>
+                        <div class="input-group">
+                            <label>Set Passcode</label>
+                            <input type="password" id="signup-password" required placeholder="••••••">
+                        </div>
+                        <button type="submit" class="btn big-btn pulse-glow" style="width: 100%;">Create
+                            Profile</button>
+                        <p class="switch-auth">Existing Agent? <span id="to-login">Log In</span></p>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Start Screen -->
+        <div id="start-screen" class="screen hidden">
+            <div class="content-center">
+                <h1 class="glitch-text" data-text="TIMELINE DRIFT">TIMELINE DRIFT</h1>
+                <p class="tagline">One decision. Infinite futures.</p>
+                <div class="user-greeting">Welcome, Agent <span id="current-user-display">Unknown</span></div>
+
+                <button id="start-btn" class="btn big-btn pulse-glow">INITIATE SIMULATION</button>
+
+                <div class="secondary-actions">
+                    <button id="how-to-play-btn" class="btn yellow-btn">How to Play</button>
+                    <button id="leaderboard-btn" class="btn secondary-btn">View Leaderboard</button>
+                    <button id="logout-btn" class="btn danger-btn">Log Out</button>
+                </div>
+
+                <div class="credits">A Neural Simulation</div>
+                <div class="author-credit">Created by Jashwanth</div>
+            </div>
+        </div>
+
+        <!-- How to Play Overlay -->
+        <div id="how-to-play-overlay" class="overlay-panel hidden">
+            <div class="scanner-content">
+                <div class="panel-header">
+                    <h2>📖 HOW TO PLAY</h2>
+                    <button class="close-btn" id="close-how-to-play">✕</button>
+                </div>
+
+                <div class="how-to-play-content">
+                    <section>
+                        <h3>🎯 OBJECTIVE</h3>
+                        <p>Govern a futuristic city for as long as possible. Balance four critical metrics while making
+                            tough decisions. How many years can you survive?</p>
+                    </section>
+
+                    <section>
+                        <h3>📊 METRICS</h3>
+                        <ul>
+                            <li><strong>STABILITY:</strong> Public order and safety. Low = fires and chaos</li>
+                            <li><strong>ECONOMY:</strong> Financial health. Affects traffic and flying vehicles</li>
+                            <li><strong>ECO-SYS:</strong> Environmental quality. Affects sky color and pollution</li>
+                            <li><strong>TRUST:</strong> Public confidence. Low = surveillance drones</li>
+                        </ul>
+                    </section>
+
+                    <section>
+                        <h3>⚡ GAMEPLAY</h3>
+                        <ul>
+                            <li>Each turn presents a <strong>decision</strong> with 2 choices</li>
+                            <li>Every choice affects multiple metrics (+ or -)</li>
+                            <li>Penalties increase over time (progressive difficulty)</li>
+                            <li>Watch for <strong>crisis events</strong> (⚠️) and <strong>recovery
+                                    opportunities</strong> (❤️‍🩹)</li>
+                        </ul>
+                    </section>
+
+                    <section>
+                        <h3>🔍 TOOLS</h3>
+                        <ul>
+                            <li><strong>📟 Scanner:</strong> View hidden weights and event triggers</li>
+                            <li><strong>❤️‍🩹 Recovery:</strong> See positive events that help struggling metrics</li>
+                            <li><strong>⚠️ Crisis Database:</strong> Browse all possible crisis events</li>
+                            <li><strong>🔊 Mute:</strong> Toggle sound effects</li>
+                        </ul>
+                    </section>
+
+                    <section>
+                        <h3>💡 TIPS</h3>
+                        <ul>
+                            <li>No metric should drop below 20% (critical danger zone)</li>
+                            <li>Look for "win-win" decisions with balanced trade-offs</li>
+                            <li>Use the scanner to understand hidden event triggers</li>
+                            <li>Recovery events trigger automatically when metrics are low</li>
+                            <li>The game gets harder over time - plan ahead!</li>
+                        </ul>
+                    </section>
+
+                    <section>
+                        <h3>🏆 SURVIVAL</h3>
+                        <p>Maintain all metrics above 0%. The game ends if any metric hits zero. Reach a high year and
+                            stable score to climb the leaderboard!</p>
+                    </section>
+                </div>
+            </div>
+        </div>
+
+        <!-- Game Interface -->
+        <div id="game-interface" class="screen hidden">
+            <!-- Top HUD: Metrics -->
+            <header class="hud-header">
+                <div class="metric-container">
+                    <div class="metric" id="metric-stability">
+                        <span class="label">STABILITY</span>
+                        <div class="bar-bg">
+                            <div class="bar-fill" style="width: 50%"></div>
+                        </div>
+                        <span class="value">50%</span>
+                    </div>
+                    <div class="metric" id="metric-economy">
+                        <span class="label">ECONOMY</span>
+                        <div class="bar-bg">
+                            <div class="bar-fill" style="width: 50%"></div>
+                        </div>
+                        <span class="value">50%</span>
+                    </div>
+                    <div class="metric" id="metric-environment">
+                        <span class="label">ECO-SYS</span>
+                        <div class="bar-bg">
+                            <div class="bar-fill" style="width: 50%"></div>
+                        </div>
+                        <span class="value">50%</span>
+                    </div>
+                    <div class="metric" id="metric-trust">
+                        <span class="label">TRUST</span>
+                        <div class="bar-bg">
+                            <div class="bar-fill" style="width: 50%"></div>
+                        </div>
+                        <span class="value">50%</span>
+                    </div>
+                </div>
+                <div class="year-display">YEAR: <span id="year-count">2026</span></div>
+            </header>
+
+            <!-- Middle: Visualization -->
+            <div id="visualizer-container">
+                <canvas id="timeline-canvas"></canvas>
+            </div>
+
+            <!-- Bottom: Decision Card -->
+            <div id="decision-area">
+                <div class="card glass-panel" id="current-card">
+                    <h2 id="card-title">Intervention Required</h2>
+                    <p id="card-desc">Policy decision imminent.</p>
+                    <div class="choices">
+                        <button class="choice-btn" id="choice-a" data-choice="a">
+                        </button>
+                        <button class="choice-btn" id="choice-b" data-choice="b">
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Turn Feedback Overlay (Popups) -->
+            <div id="feedback-overlay"></div>
+        </div>
+
+        <!-- Game Over Screen -->
+        <div id="game-over-screen" class="screen hidden">
+            <div class="glass-panel summary-panel">
+                <h2 id="end-title">Simulation Terminated</h2>
+                <div id="final-stats"></div>
+                <p id="cause-effect-summary"></p>
+                <div class="control-row">
+                    <button id="restart-btn" class="btn primary-btn">Reboot Simulation</button>
+                    <button id="return-home-btn" class="btn secondary-btn">Return to Menu</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Leaderboard Overlay -->
+        <div id="leaderboard-overlay" class="overlay hidden">
+            <div class="glass-panel leaderboard-panel">
+                <div class="panel-header">
+                    <h2>LEADERBOARD</h2>
+                    <button class="close-btn" id="close-leaderboard">×</button>
+                </div>
+                <div class="leaderboard-list" id="leaderboard-list">
+                    <!-- Rows injected by JS -->
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/data.js"></script>
+    <script src="js/city-renderer.js"></script>
+    <script src="js/sound.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/leaderboard.js"></script>
+    <script src="js/engine.js"></script>
+    <script src="js/visualizer.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/game.js"></script>
+</body>
+
+</html>
