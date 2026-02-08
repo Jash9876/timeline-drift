@@ -4,21 +4,27 @@
  * Matches the pixel-art reference: Sunset skyline with water reflections.
  */
 class CityRenderer {
-    constructor(canvasId) {
+        constructor(canvasId) {
         this.canvas = document.createElement('canvas');
         this.canvas.id = canvasId || 'city-canvas';
         this.ctx = this.canvas.getContext('2d', { alpha: false });
 
         // Pixel-art canvas settings (UPSCALED for detail)
         this.renderHeight = 360;
-        this.resize(); // Calculate width based on aspect ratio
-
+        this.renderWidth = 640; // Default fallback
+        
         this.canvas.height = this.renderHeight;
-        // Width will be set in resize()
-
+        this.canvas.width = this.renderWidth;
+        
         this.canvas.style.imageRendering = 'pixelated';
         this.canvas.style.width = '100%';
         this.canvas.style.height = '100%';
+        
+        try {
+            this.resize(); // Try to set actual size
+        } catch (e) {
+            console.error("CityRenderer: Initial resize failed, using defaults", e);
+        }
 
         // Game Metrics -> World Status
         this.metrics = { stability: 60, economy: 60, environment: 60, trust: 60 };
@@ -61,7 +67,7 @@ class CityRenderer {
         requestAnimationFrame(this.animate);
     }
 
-    resize() {
+        resize() {
         // "Smart Zoom" / Cover sizing
         // We want to maintain the height (360px) to keep pixel scale consistent.
         // We calculate the required width to cover the screen at that scale.
@@ -74,11 +80,12 @@ class CityRenderer {
         if (this.renderWidth < 200) this.renderWidth = 200;
 
         this.canvas.width = this.renderWidth;
-
+        
         // Only re-init if we have valid dimensions
         if (this.renderWidth > 0) {
             this.initCity(); // Re-distribute buildings/stars for new width
         }
+    }
     }
 
     // --- EVENT SYSTEM ---
