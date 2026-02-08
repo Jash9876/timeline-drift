@@ -157,13 +157,49 @@ class AuthSystem {
         console.log("Auth: Attempting login for", username);
         const email = this.getEmail(username);
         try {
-            await this.withTimeout(
+            const userCredential = await this.withTimeout(
                 auth.signInWithEmailAndPassword(email, password),
                 8000
             );
-            this.updateConnectionStatus(true);
-            // currentUser will be set by onAuthStateChanged listener
-            return { success: true };
+            const user = userCredential.user;
+
+            // Fetch user data from Firestore immediately (like signup does)
+            try {
+                const doc = await this.withTimeout(
+                    db.collection('users').doc(user.uid).get(),
+                    5000
+                );
+
+                if (doc && doc.exists) {
+                    this.currentUser = doc.data();
+                    this.currentUser.uid = user.uid;
+                    this.updateConnectionStatus(true);
+                    console.log('Auth: Login successful, user loaded:', this.currentUser);
+                    return { success: true, user: this.currentUser };
+                } else {
+                    // DB doc missing, create basic user from auth
+                    console.warn('Auth: User authenticated but DB record missing.');
+                    this.currentUser = {
+                        uid: user.uid,
+                        username: username,
+                        highScore: 0,
+                        gamesPlayed: 0
+                    };
+                    this.updateConnectionStatus(true);
+                    return { success: true, user: this.currentUser };
+                }
+            } catch (dbError) {
+                console.warn("Auth: DB fetch failed, using basic user data", dbError);
+                // Fallback to basic user if DB fails
+                this.currentUser = {
+                    uid: user.uid,
+                    username: username,
+                    highScore: 0,
+                    gamesPlayed: 0,
+                    isOffline: true
+                };
+                return { success: true, user: this.currentUser };
+            }
         } catch (error) {
             console.error("Login Error:", error);
 

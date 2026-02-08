@@ -804,19 +804,18 @@ canvas {
 
 /* --- Decision Card --- */
 #decision-area {
-    position: absolute;
+    position: fixed;
     bottom: 3rem;
-    width: 100%;
-    display: flex;
-    justify-content: center;
+    left: 0;
+    right: 0;
     z-index: 30;
-    padding: 0 1rem;
     pointer-events: none;
 }
 
 #current-card {
     width: 650px;
-    max-width: 100%;
+    max-width: calc(100% - 2rem);
+    margin: 0 auto;
     transform: translateY(0);
     transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     background: rgba(10, 10, 15, 0.85);
