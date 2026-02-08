@@ -52,8 +52,14 @@ class GameController {
             btn.disabled = true;
 
             const res = await this.auth.login(u, p);
-            // Note: success doesn't mean logged in yet, wait for callback
-            if (!res.success) {
+
+            if (res.success) {
+                // If offline mode returns a user directly, trigger success immediately
+                // (Standard Firebase auth waits for onAuthStateChanged, but offline won't fire that)
+                if (res.user) {
+                    this.onLoginSuccess(res.user);
+                }
+            } else {
                 alert(res.message);
                 btn.innerText = originalText;
                 btn.disabled = false;
@@ -71,7 +77,10 @@ class GameController {
             btn.disabled = true;
 
             const res = await this.auth.signup(u, p);
-            if (!res.success) {
+
+            if (res.success) {
+                if (res.user) this.onLoginSuccess(res.user);
+            } else {
                 alert(res.message);
                 btn.innerText = originalText;
                 btn.disabled = false;

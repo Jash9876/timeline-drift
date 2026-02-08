@@ -99,6 +99,7 @@ class AuthSystem {
 
             let msg = error.message;
             if (error.code === 'auth/email-already-in-use') msg = 'Agent ID already taken.';
+            if (error.code === 'auth/weak-password') msg = 'Passcode too short (min 6 chars).';
             return { success: false, message: msg };
         }
     }
