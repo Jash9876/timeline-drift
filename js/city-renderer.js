@@ -81,8 +81,8 @@ class CityRenderer {
 
         this.canvas.width = this.renderWidth;
 
-        // Mobile Optimization Check
-        this.isMobile = window.innerWidth < 768;
+        // Mobile Optimization Check (Expanded to Tablets/Small Laptops)
+        this.isMobile = window.innerWidth < 1280;
 
         // Only re-init if we have valid dimensions
         if (this.renderWidth > 0) {
