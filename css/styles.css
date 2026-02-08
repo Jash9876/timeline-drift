@@ -1200,7 +1200,7 @@ canvas {
     top: 50%;
     left: 2rem;
     transform: translateY(-50%) translateX(0);
-    width: 350px;
+    width: clamp(260px, 20vw, 320px);
     z-index: 1000;
     transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.4, 0.0, 0.2, 1), visibility 0.3s;
     opacity: 1;
@@ -1218,7 +1218,7 @@ canvas {
 .scanner-content {
     background: rgba(0, 10, 20, 0.9);
     border: 1px solid var(--primary-cyan);
-    padding: 1.5rem;
+    padding: 1rem;
     border-radius: 4px;
     box-shadow: 0 0 20px rgba(0, 243, 255, 0.2);
     position: relative;
@@ -1233,7 +1233,7 @@ canvas {
     top: 50%;
     left: 2rem;
     transform: translateY(-50%) translateX(0);
-    width: 350px;
+    width: clamp(260px, 20vw, 320px);
     z-index: 1000;
     transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.4, 0.0, 0.2, 1), visibility 0.3s;
     opacity: 1;
@@ -1258,7 +1258,7 @@ canvas {
     top: 50%;
     right: 2rem;
     transform: translateY(-50%) translateX(0);
-    width: 350px;
+    width: clamp(260px, 20vw, 320px);
     z-index: 1000;
     transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.4, 0.0, 0.2, 1), visibility 0.3s;
     opacity: 1;
@@ -1338,8 +1338,8 @@ canvas {
 .scanner-title {
     font-family: var(--font-header);
     color: var(--primary-cyan);
-    font-size: 1.2rem;
-    margin-bottom: 1rem;
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
     border-bottom: 1px dashed rgba(0, 243, 255, 0.3);
     padding-bottom: 0.5rem;
     letter-spacing: 2px;
@@ -1354,17 +1354,17 @@ canvas {
 .scanner-list li {
     display: flex;
     align-items: center;
-    margin-bottom: 0.8rem;
-    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+    font-size: 0.8rem;
     color: #fff;
     font-family: var(--font-header);
 }
 
 .scanner-list li.header {
     color: var(--primary-cyan);
-    font-size: 0.75rem;
-    margin-top: 1.2rem;
-    margin-bottom: 0.5rem;
+    font-size: 0.7rem;
+    margin-top: 0.8rem;
+    margin-bottom: 0.4rem;
     border-bottom: 1px solid rgba(0, 243, 255, 0.2);
     padding-bottom: 2px;
     letter-spacing: 2px;
@@ -1378,8 +1378,8 @@ canvas {
 }
 
 .scanner-list .icon {
-    font-size: 1.2rem;
-    margin-right: 0.8rem;
+    font-size: 1rem;
+    margin-right: 0.5rem;
     width: 25px;
     text-align: center;
 }
@@ -1387,7 +1387,7 @@ canvas {
 .scanner-list .label {
     flex-grow: 1;
     color: var(--text-dim);
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     letter-spacing: 1px;
 }
 
@@ -1583,11 +1583,7 @@ canvas {
         overflow-y: auto;
     }
 
-    #scanner-overlay,
-    #recovery-overlay,
-    #crisis-overlay {
-        width: 300px;
-    }
+
 
     .icon-btn {
         width: 45px;
