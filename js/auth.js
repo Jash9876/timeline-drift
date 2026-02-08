@@ -60,8 +60,12 @@ class AuthSystem {
         ]);
     }
 
-    // Register a new user
     async signup(username, password) {
+        // FAST FAIL: Client-side validation to avoid network noise
+        if (password.length < 6) {
+            return { success: false, message: 'Passcode too short (min 6 chars).' };
+        }
+
         const email = this.getEmail(username);
         try {
             // 1. Create Auth User (with timeout)
