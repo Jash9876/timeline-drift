@@ -24,13 +24,13 @@ const GameData = {
             choiceA: {
                 label: 'Privatize & Toll',
                 text: 'Sell rights to corporations. Efficiency up, public access down.',
-                impact: { economy: 10, trust: -10, stability: 5, environment: 0 },
+                impact: { economy: 15, trust: -15, stability: 0, environment: 0 },
                 weightMod: { socialUnrest: 10 }
             },
             choiceB: {
                 label: 'Tax-Funded Repair',
                 text: 'Raise taxes to fix it publicly. Slow but fair.',
-                impact: { economy: -10, trust: 10, stability: 5, environment: 0 },
+                impact: { economy: -12, trust: 12, stability: 8, environment: 0 },
                 weightMod: { socialUnrest: -5 }
             }
         },
@@ -193,7 +193,7 @@ const GameData = {
             choiceA: {
                 label: 'Allow Ads',
                 text: 'Subsidize dreams for the poor.',
-                impact: { economy: 15, trust: -10, stability: 5, environment: 0 },
+                impact: { economy: 20, trust: -15, stability: 2, environment: 0 },
                 weightMod: { techDependency: 15 }
             },
             choiceB: {
@@ -337,7 +337,7 @@ const GameData = {
             choiceA: {
                 label: 'Virtualize',
                 text: 'School from home. No bullies? No germs?',
-                impact: { economy: 15, trust: -10, stability: 5, environment: 5 },
+                impact: { economy: 20, trust: -15, stability: 0, environment: 10 },
                 weightMod: { techDependency: 15 }
             },
             choiceB: {
@@ -409,13 +409,13 @@ const GameData = {
             choiceA: {
                 label: 'Authorize',
                 text: 'Company towns return. Efficiency up.',
-                impact: { economy: 15, trust: -15, stability: 5, environment: 0 },
+                impact: { economy: 25, trust: -20, stability: 0, environment: 0 },
                 weightMod: { socialUnrest: 10 }
             },
             choiceB: {
                 label: 'Ban It',
                 text: 'Legal tender is sovereign.',
-                impact: { economy: -5, trust: 5, stability: 0, environment: 0 },
+                impact: { economy: -8, trust: 8, stability: 0, environment: 0 },
                 weightMod: { economy: -5 }
             }
         },
@@ -648,13 +648,13 @@ const GameData = {
             choiceA: {
                 label: 'Build Metro',
                 text: 'Invest in infrastructure. Create jobs.',
-                impact: { economy: 8, trust: 5, stability: 5, environment: -3 },
+                impact: { economy: 10, trust: 5, stability: 3, environment: -5 },
                 weightMod: { socialUnrest: -5 }
             },
             choiceB: {
                 label: 'Expand Bus Network',
                 text: 'Cheaper, faster deployment.',
-                impact: { economy: 3, trust: 8, stability: 3, environment: 5 },
+                impact: { economy: 5, trust: 10, stability: 2, environment: 8 },
                 weightMod: { climateRisk: -3 }
             }
         },
@@ -720,13 +720,13 @@ const GameData = {
             choiceA: {
                 label: 'Universal Coverage',
                 text: 'Everyone deserves care.',
-                impact: { economy: -10, trust: 15, stability: 8, environment: 0 },
+                impact: { economy: -15, trust: 18, stability: 12, environment: 0 },
                 weightMod: { socialUnrest: -10 }
             },
             choiceB: {
                 label: 'Private Partnerships',
                 text: 'Let corporations build clinics.',
-                impact: { economy: 8, trust: -3, stability: 5, environment: 0 },
+                impact: { economy: 12, trust: -5, stability: 5, environment: 0 },
                 weightMod: { socialUnrest: 3 }
             }
         },
