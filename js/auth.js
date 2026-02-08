@@ -1,91 +1,117 @@
 class AuthSystem {
     constructor() {
         this.currentUser = null;
-        this.usersKey = 'timeline_users';
-        this.sessionKey = 'timeline_session';
-        this.loadSession();
+        this.onUserChangeCallback = null;
+
+        // Listen for auth state changes
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                // Fetch extra user data from Firestore
+                db.collection('users').doc(user.uid).get().then((doc) => {
+                    if (doc.exists) {
+                        this.currentUser = doc.data();
+                        this.currentUser.uid = user.uid; // Store UID
+                        console.log('Auth: User loaded', this.currentUser);
+                        if (this.onUserChangeCallback) this.onUserChangeCallback(this.currentUser);
+                    } else {
+                        // Rare case: Auth exists but DB doc missing
+                        console.error('Auth: User authenticated but no DB record found.');
+                    }
+                });
+            } else {
+                this.currentUser = null;
+                console.log('Auth: User signed out');
+                if (this.onUserChangeCallback) this.onUserChangeCallback(null);
+            }
+        });
     }
 
-    // Load active session from local storage
-    loadSession() {
-        const savedUser = localStorage.getItem(this.sessionKey);
-        if (savedUser) {
-            this.currentUser = JSON.parse(savedUser);
-            return this.currentUser;
-        }
-        return null;
+    // Callback to update UI when auth state resolves
+    onUserChange(callback) {
+        this.onUserChangeCallback = callback;
+    }
+
+    // Helper: Fake email generator for username-based login
+    getEmail(username) {
+        return `${username.toLowerCase()}@timeline-drift.game`;
     }
 
     // Register a new user
-    signup(username, password) {
-        const users = this.getUsers();
-        if (users[username]) {
-            return { success: false, message: 'Agent ID already exists.' };
+    async signup(username, password) {
+        const email = this.getEmail(username);
+        try {
+            // 1. Create Auth User
+            const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+            const user = userCredential.user;
+
+            // 2. Create Firestore Document
+            const newUser = {
+                username: username,
+                highScore: 0,
+                gamesPlayed: 0,
+                joined: new Date().toISOString()
+            };
+
+            await db.collection('users').doc(user.uid).set(newUser);
+
+            this.currentUser = { ...newUser, uid: user.uid };
+            return { success: true, user: this.currentUser };
+
+        } catch (error) {
+            console.error("Signup Error:", error);
+            let msg = error.message;
+            if (error.code === 'auth/email-already-in-use') msg = 'Agent ID already taken.';
+            return { success: false, message: msg };
         }
-
-        const newUser = {
-            username: username,
-            password: password, // In a real app, hash this!
-            highScore: 0,
-            gamesPlayed: 0,
-            joined: new Date().toISOString()
-        };
-
-        users[username] = newUser;
-        this.saveUsers(users);
-        this.login(username, password);
-        return { success: true, user: newUser };
     }
 
     // Login existing user
-    login(username, password) {
-        const users = this.getUsers();
-        const user = users[username];
-
-        if (user && user.password === password) {
-            this.currentUser = user;
-            localStorage.setItem(this.sessionKey, JSON.stringify(user));
-            return { success: true, user: user };
+    async login(username, password) {
+        const email = this.getEmail(username);
+        try {
+            await auth.signInWithEmailAndPassword(email, password);
+            // currentUser will be set by onAuthStateChanged listener
+            return { success: true };
+        } catch (error) {
+            console.error("Login Error:", error);
+            return { success: false, message: 'Invalid credentials.' };
         }
-        return { success: false, message: 'Invalid credentials.' };
     }
 
     // Logout
-    logout() {
-        this.currentUser = null;
-        localStorage.removeItem(this.sessionKey);
+    async logout() {
+        await auth.signOut();
+        // Listener nulls currentUser
     }
 
-    // Update user stats
-    updateStats(score) {
-        if (!this.currentUser) return;
+    // Update user stats in Firestore
+    async updateStats(score) {
+        if (!this.currentUser || !this.currentUser.uid) return;
 
-        const users = this.getUsers();
-        const user = users[this.currentUser.username];
+        const userRef = db.collection('users').doc(this.currentUser.uid);
 
-        user.gamesPlayed++;
-        if (score > user.highScore) {
-            user.highScore = score;
+        try {
+            await db.runTransaction(async (transaction) => {
+                const doc = await transaction.get(userRef);
+                if (!doc.exists) return;
+
+                const data = doc.data();
+                const newGamesPlayed = (data.gamesPlayed || 0) + 1;
+                const newHighScore = Math.max(data.highScore || 0, score);
+
+                transaction.update(userRef, {
+                    gamesPlayed: newGamesPlayed,
+                    highScore: newHighScore,
+                    lastActive: new Date().toISOString()
+                });
+
+                // Update local state
+                this.currentUser.gamesPlayed = newGamesPlayed;
+                this.currentUser.highScore = newHighScore;
+            });
+            console.log('Stats saved to cloud.');
+        } catch (e) {
+            console.error("Failed to save stats:", e);
         }
-
-        this.currentUser = user; // Update local session
-        users[user.username] = user; // Update db
-        this.saveUsers(users);
-        localStorage.setItem(this.sessionKey, JSON.stringify(user));
-    }
-
-    // Helper: Get all users
-    getUsers() {
-        const users = localStorage.getItem(this.usersKey);
-        return users ? JSON.parse(users) : {};
-    }
-
-    // Helper: Save users
-    saveUsers(users) {
-        localStorage.setItem(this.usersKey, JSON.stringify(users));
-    }
-
-    getCurrentUser() {
-        return this.currentUser;
     }
 }

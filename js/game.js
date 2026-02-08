@@ -40,22 +40,42 @@ class GameController {
 
     initEventListeners() {
         // Auth Forms
-        document.getElementById('login-form').addEventListener('submit', (e) => {
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
             e.preventDefault();
             const u = document.getElementById('login-username').value;
             const p = document.getElementById('login-password').value;
-            const res = this.auth.login(u, p);
-            if (res.success) this.onLoginSuccess(res.user);
-            else alert(res.message);
+
+            // UI Feedback
+            const btn = document.querySelector('#login-form button');
+            const originalText = btn.innerText;
+            btn.innerText = 'AUTHENTICATING...';
+            btn.disabled = true;
+
+            const res = await this.auth.login(u, p);
+            // Note: success doesn't mean logged in yet, wait for callback
+            if (!res.success) {
+                alert(res.message);
+                btn.innerText = originalText;
+                btn.disabled = false;
+            }
         });
 
-        document.getElementById('signup-form').addEventListener('submit', (e) => {
+        document.getElementById('signup-form').addEventListener('submit', async (e) => {
             e.preventDefault();
             const u = document.getElementById('signup-username').value;
             const p = document.getElementById('signup-password').value;
-            const res = this.auth.signup(u, p);
-            if (res.success) this.onLoginSuccess(res.user);
-            else alert(res.message);
+
+            const btn = document.querySelector('#signup-form button');
+            const originalText = btn.innerText;
+            btn.innerText = 'REGISTERING...';
+            btn.disabled = true;
+
+            const res = await this.auth.signup(u, p);
+            if (!res.success) {
+                alert(res.message);
+                btn.innerText = originalText;
+                btn.disabled = false;
+            }
         });
 
         // Switch Auth Mode
@@ -80,6 +100,10 @@ class GameController {
         document.getElementById('return-home-btn').addEventListener('click', () => {
             this.sound.playClick();
             this.ui.showScreen('start');
+            this.visualizer.stopAnimation();
+            this.isGameActive = false;
+            // Ensure background renders correctly on return
+            if (this.ui.cityRenderer) this.ui.cityRenderer.resize();
         });
         document.getElementById('logout-btn').addEventListener('click', () => this.logout());
 

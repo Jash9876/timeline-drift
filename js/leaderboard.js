@@ -3,35 +3,44 @@ class LeaderboardSystem {
         this.auth = authSystem;
     }
 
-    // Get sorted leaderboard data (real users only)
-    getLeaderboard() {
-        const users = this.auth.getUsers();
-        let allScores = [];
+    // Get sorted leaderboard data from Firestore
+    async getLeaderboard() {
+        const scores = [];
+        try {
+            const snapshot = await db.collection('users')
+                .orderBy('highScore', 'desc')
+                .limit(10)
+                .get();
 
-        // Add real users to the list
-        for (const username in users) {
-            if (users[username].highScore > 0) {
-                allScores.push({
-                    username: username,
-                    highScore: users[username].highScore
-                });
-            }
+            snapshot.forEach(doc => {
+                const data = doc.data();
+                if (data.highScore > 0) {
+                    scores.push({
+                        username: data.username,
+                        highScore: data.highScore
+                    });
+                }
+            });
+        } catch (error) {
+            console.error("Leaderboard fetch error:", error);
         }
-
-        // Sort descending
-        allScores.sort((a, b) => b.highScore - a.highScore);
-
-        // Return top 10
-        return allScores.slice(0, 10);
+        return scores;
     }
 
     // Render leaderboard to UI
-    render(containerId) {
+    async render(containerId) {
         const container = document.getElementById(containerId);
         if (!container) return;
 
-        const data = this.getLeaderboard();
+        container.innerHTML = '<div class="loading-spinner">LOADING DATA...</div>';
+
+        const data = await this.getLeaderboard();
         container.innerHTML = '';
+
+        if (data.length === 0) {
+            container.innerHTML = '<div class="empty-state">No records yet. Be the first!</div>';
+            return;
+        }
 
         data.forEach((entry, index) => {
             const row = document.createElement('div');
