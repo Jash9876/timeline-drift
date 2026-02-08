@@ -34,14 +34,21 @@ body {
     font-family: var(--font-body);
     overflow: hidden;
     width: 100vw;
+    overflow-x: hidden;
     /* Mobile Viewport Fix */
     height: 100vh;
     height: 100dvh;
 }
 
+html,
+#app {
+    width: 100vw;
+    overflow-x: hidden;
+}
+
 /* --- Background Texture & Grid --- */
 #bg-layer {
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
@@ -1053,6 +1060,9 @@ canvas {
     /* Darker background */
     border: 1px solid var(--alert-red);
     box-shadow: 0 0 30px rgba(255, 0, 60, 0.2);
+    /* Responsive Fixes */
+    max-height: 80dvh;
+    overflow-y: auto;
 }
 
 #game-over-screen h1 {
@@ -1548,6 +1558,8 @@ canvas {
         width: 90%;
         max-width: 600px;
         padding: 1.5rem;
+        max-height: 60vh;
+        overflow-y: auto;
     }
 
     #scanner-overlay,

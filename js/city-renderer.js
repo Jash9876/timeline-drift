@@ -10,10 +10,12 @@ class CityRenderer {
         this.ctx = this.canvas.getContext('2d', { alpha: false });
 
         // Pixel-art canvas settings (UPSCALED for detail)
-        this.renderWidth = 640;
         this.renderHeight = 360;
-        this.canvas.width = this.renderWidth;
+        this.resize(); // Calculate width based on aspect ratio
+
         this.canvas.height = this.renderHeight;
+        // Width will be set in resize()
+
         this.canvas.style.imageRendering = 'pixelated';
         this.canvas.style.width = '100%';
         this.canvas.style.height = '100%';
@@ -48,10 +50,24 @@ class CityRenderer {
         // Game year for tech progression
         this.currentYear = 2030;
 
+        window.addEventListener('resize', () => this.resize());
+
         this.initCity();
 
         this.animate = this.animate.bind(this);
         requestAnimationFrame(this.animate);
+    }
+
+    resize() {
+        // "Smart Zoom" / Cover sizing
+        // We want to maintain the height (360px) to keep pixel scale consistent.
+        // We calculate the required width to cover the screen at that scale.
+        const aspect = window.innerWidth / window.innerHeight;
+        this.renderWidth = Math.ceil(this.renderHeight * aspect);
+        this.canvas.width = this.renderWidth;
+        // initCity() or re-generating elements might be needed if width changes drastically
+        // For now, elements off-screen will just be drawn off-screen or new ones will spawn.
+        this.initCity(); // Re-distribute buildings/stars for new width
     }
 
     // --- EVENT SYSTEM ---
