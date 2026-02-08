@@ -10,21 +10,13 @@ class CityRenderer {
         this.ctx = this.canvas.getContext('2d', { alpha: false });
 
         // Pixel-art canvas settings (UPSCALED for detail)
+        this.renderWidth = 640;
         this.renderHeight = 360;
-        this.renderWidth = 640; // Default fallback
-
-        this.canvas.height = this.renderHeight;
         this.canvas.width = this.renderWidth;
-
+        this.canvas.height = this.renderHeight;
         this.canvas.style.imageRendering = 'pixelated';
         this.canvas.style.width = '100%';
         this.canvas.style.height = '100%';
-
-        try {
-            this.resize(); // Try to set actual size
-        } catch (e) {
-            console.error("CityRenderer: Initial resize failed, using defaults", e);
-        }
 
         // Game Metrics -> World Status
         this.metrics = { stability: 60, economy: 60, environment: 60, trust: 60 };
@@ -56,38 +48,10 @@ class CityRenderer {
         // Game year for tech progression
         this.currentYear = 2030;
 
-        window.addEventListener('resize', () => this.resize());
-
-        // Prevent double init or crash if window is 0 sized
-        if (this.renderWidth > 0 && this.renderHeight > 0) {
-            this.initCity();
-        }
+        this.initCity();
 
         this.animate = this.animate.bind(this);
         requestAnimationFrame(this.animate);
-    }
-
-    resize() {
-        // "Smart Zoom" / Cover sizing
-        // We want to maintain the height (360px) to keep pixel scale consistent.
-        // We calculate the required width to cover the screen at that scale.
-        const aspect = window.innerWidth / window.innerHeight;
-        // Safety check for NaN or 0
-        if (!aspect || aspect <= 0) return;
-
-        this.renderWidth = Math.ceil(this.renderHeight * aspect);
-        // Minimum safety width
-        if (this.renderWidth < 200) this.renderWidth = 200;
-
-        this.canvas.width = this.renderWidth;
-
-        // Mobile Optimization Check (Expanded to Tablets/Small Laptops)
-        this.isMobile = window.innerWidth < 1280;
-
-        // Only re-init if we have valid dimensions
-        if (this.renderWidth > 0) {
-            this.initCity(); // Re-distribute buildings/stars for new width
-        }
     }
 
     // --- EVENT SYSTEM ---
@@ -107,7 +71,6 @@ class CityRenderer {
         this.layers = { far: [], mid: [], near: [] };
         this.cars = [];
         this.particles = [];
-        this.billboard = { x: 0, y: 0, w: 0, h: 0, assigned: false }; // Reset to prevent ghosting
 
         const horizonY = this.renderHeight * 0.55; // Water line
 
@@ -162,27 +125,13 @@ class CityRenderer {
             }
 
             // Pick one building for the billboard
-            // Pick one building for the billboard (Wider check for text fit)
-            if (!this.billboard.assigned && x > this.renderWidth * 0.3 && x < this.renderWidth * 0.6 && h > 80 && b.w > 42) {
+            if (!this.billboard.assigned && x > this.renderWidth * 0.3 && x < this.renderWidth * 0.6 && h > 80) {
                 b.hasBillboard = true;
-                // Taller billboard (22px) and positioned slightly higher (-24)
-                this.billboard = { x: b.x + 2, y: horizonY - h - 24, w: b.w - 4, h: 22, assigned: true };
+                this.billboard = { x: b.x + 3, y: horizonY - h - 18, w: b.w - 6, h: 14, assigned: true };
             }
 
             this.layers.near.push(b);
             x += w + 2;
-        }
-
-        // Fallback: If no billboard assigned (rare but possible on small screens), force one on the tallest central building
-        if (!this.billboard.assigned && this.layers.near.length > 0) {
-            const centerCandidates = this.layers.near.filter(b => b.x > this.renderWidth * 0.2 && b.x < this.renderWidth * 0.8 && b.w > 30);
-            if (centerCandidates.length > 0) {
-                // picked tallest
-                const best = centerCandidates.reduce((prev, current) => (prev.h > current.h) ? prev : current);
-                best.hasBillboard = true;
-                const horizonY = this.renderHeight * 0.55;
-                this.billboard = { x: best.x + 2, y: horizonY - best.h - 24, w: best.w - 4, h: 22, assigned: true };
-            }
         }
     }
 
@@ -215,16 +164,12 @@ class CityRenderer {
     advanceTurn() {
         // Use targetMetrics for immediate response (not lerped metrics)
         const stability = this.targetMetrics.stability;
-
-        // Optimize: Reduce fire spread on mobile
-        const effectiveStability = this.isMobile ? (stability + 20) : stability;
-
         let targetFireCount = 0;
 
         // Stability Threshold Logic
-        if (effectiveStability > 40) {
+        if (stability > 40) {
             targetFireCount = 0;
-        } else if (effectiveStability > 30) {
+        } else if (stability > 30) {
             targetFireCount = 1 + Math.floor(Math.random() * 2); // 1-2
         } else if (stability > 20) {
             targetFireCount = 3 + Math.floor(Math.random() * 2); // 3-4
@@ -690,15 +635,13 @@ class CityRenderer {
                     if (Math.random() < 0.8 * b.fireIntensity) {
                         const flicker = Math.random() > 0.5 ? '#ffaa00' : '#ff4400';
                         this.ctx.fillStyle = flicker;
-                        // Add bloom (DESKTOP ONLY)
-                        if (!this.isMobile) {
-                            this.ctx.save();
-                            this.ctx.globalCompositeOperation = 'screen';
-                            this.ctx.globalAlpha = 0.5 * b.fireIntensity;
-                            this.ctx.fillStyle = '#ff8800';
-                            this.ctx.fillRect(b.x + w.x - 2, b.y - b.h + w.y - 2, w.w + 4, w.h + 4);
-                            this.ctx.restore();
-                        }
+                        // Add bloom
+                        this.ctx.save();
+                        this.ctx.globalCompositeOperation = 'screen';
+                        this.ctx.globalAlpha = 0.5 * b.fireIntensity;
+                        this.ctx.fillStyle = '#ff8800';
+                        this.ctx.fillRect(b.x + w.x - 2, b.y - b.h + w.y - 2, w.w + 4, w.h + 4);
+                        this.ctx.restore();
                     } else {
                         this.ctx.fillStyle = '#1a0505'; // Burnt out
                     }
@@ -851,15 +794,13 @@ class CityRenderer {
 
             // Status Color
             let statusColor = status >= 70 ? '#0f0' : (status >= 40 ? '#ff0' : '#f00');
-            // Brighter red for visibility
-            if (status < 40 && this.time % 1 > 0.5) statusColor = '#ff3333';
+            if (status < 40 && this.time % 1 > 0.5) statusColor = '#600'; // Flicker
 
-            // Text - Larger and clearer
+            // Text
             this.ctx.fillStyle = statusColor;
-            this.ctx.font = 'bold 11px monospace';
-            this.ctx.textBaseline = 'middle';
+            this.ctx.font = 'bold 8px monospace';
             this.ctx.textAlign = 'center';
-            this.ctx.fillText(`${Math.floor(status)}%`, bx + bw / 2, by + bh / 2 + 1);
+            this.ctx.fillText(`${Math.floor(status)}%`, bx + bw / 2, by + bh - 3);
 
             // Scanlines
             this.ctx.fillStyle = 'rgba(0,0,0,0.3)';
