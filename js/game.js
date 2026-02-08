@@ -138,6 +138,19 @@ class GameController {
                 this.sound.playClick();
             });
         }
+
+        // Mute Button
+        const muteBtn = document.getElementById('mute-btn');
+        if (muteBtn) {
+            muteBtn.addEventListener('click', () => {
+                const isMuted = this.sound.toggleMute();
+                this.ui.updateMuteIcon(isMuted);
+                // No click sound on mute toggle, or maybe a specific one?
+                // Keeping it silent or playing a small blip if unmuting could be nice.
+            });
+            // Init state
+            this.ui.updateMuteIcon(this.sound.isMuted);
+        }
     }
 
     checkAuth() {

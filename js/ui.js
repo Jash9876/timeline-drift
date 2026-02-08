@@ -36,22 +36,8 @@ class UIManager {
         this.cityRenderer = new CityRenderer();
         bgLayer.appendChild(this.cityRenderer.canvas);
 
-        // Mute Button Handler
+        // Mute Button Reference
         this.muteBtn = document.getElementById('mute-btn');
-        this.muteBtn.addEventListener('click', () => {
-            if (window.game && window.game.sound) {
-                const isMuted = window.game.sound.toggleMute();
-                this.updateMuteIcon(isMuted);
-            }
-        });
-
-        // Initialize icon state
-        // We need to wait for game.sound to be ready, or check it if available
-        setTimeout(() => {
-            if (window.game && window.game.sound) {
-                this.updateMuteIcon(window.game.sound.isMuted);
-            }
-        }, 100);
     }
 
     updateMuteIcon(isMuted) {
