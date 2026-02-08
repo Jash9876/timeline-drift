@@ -6,7 +6,7 @@ class SoundManager {
         this.masterGain.gain.value = 0.3; // Default volume
 
         // Ambient music (Hosted on GitHub LFS to bypass Vercel 100MB limit)
-        this.ambientAudio = new Audio('https://github.com/Jash9876/timeline-drift/raw/main/audio/ambient.webm');
+        this.ambientAudio = new Audio('https://media.githubusercontent.com/media/Jash9876/timeline-drift/main/audio/ambient.webm');
         this.ambientAudio.loop = true;
         this.ambientAudio.volume = 0.4;
         this.ambientSource = null;
