@@ -52,7 +52,10 @@ class CityRenderer {
 
         window.addEventListener('resize', () => this.resize());
 
-        this.initCity();
+        // Prevent double init or crash if window is 0 sized
+        if (this.renderWidth > 0 && this.renderHeight > 0) {
+            this.initCity();
+        }
 
         this.animate = this.animate.bind(this);
         requestAnimationFrame(this.animate);
@@ -63,11 +66,19 @@ class CityRenderer {
         // We want to maintain the height (360px) to keep pixel scale consistent.
         // We calculate the required width to cover the screen at that scale.
         const aspect = window.innerWidth / window.innerHeight;
+        // Safety check for NaN or 0
+        if (!aspect || aspect <= 0) return;
+
         this.renderWidth = Math.ceil(this.renderHeight * aspect);
+        // Minimum safety width
+        if (this.renderWidth < 200) this.renderWidth = 200;
+
         this.canvas.width = this.renderWidth;
-        // initCity() or re-generating elements might be needed if width changes drastically
-        // For now, elements off-screen will just be drawn off-screen or new ones will spawn.
-        this.initCity(); // Re-distribute buildings/stars for new width
+
+        // Only re-init if we have valid dimensions
+        if (this.renderWidth > 0) {
+            this.initCity(); // Re-distribute buildings/stars for new width
+        }
     }
 
     // --- EVENT SYSTEM ---
