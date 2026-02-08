@@ -107,6 +107,7 @@ class CityRenderer {
         this.layers = { far: [], mid: [], near: [] };
         this.cars = [];
         this.particles = [];
+        this.billboard = { x: 0, y: 0, w: 0, h: 0, assigned: false }; // Reset to prevent ghosting
 
         const horizonY = this.renderHeight * 0.55; // Water line
 
@@ -161,13 +162,27 @@ class CityRenderer {
             }
 
             // Pick one building for the billboard
-            if (!this.billboard.assigned && x > this.renderWidth * 0.3 && x < this.renderWidth * 0.6 && h > 80) {
+            // Pick one building for the billboard (Wider check for text fit)
+            if (!this.billboard.assigned && x > this.renderWidth * 0.3 && x < this.renderWidth * 0.6 && h > 80 && b.w > 42) {
                 b.hasBillboard = true;
-                this.billboard = { x: b.x + 3, y: horizonY - h - 18, w: b.w - 6, h: 14, assigned: true };
+                // Taller billboard (22px) and positioned slightly higher (-24)
+                this.billboard = { x: b.x + 2, y: horizonY - h - 24, w: b.w - 4, h: 22, assigned: true };
             }
 
             this.layers.near.push(b);
             x += w + 2;
+        }
+
+        // Fallback: If no billboard assigned (rare but possible on small screens), force one on the tallest central building
+        if (!this.billboard.assigned && this.layers.near.length > 0) {
+            const centerCandidates = this.layers.near.filter(b => b.x > this.renderWidth * 0.2 && b.x < this.renderWidth * 0.8 && b.w > 30);
+            if (centerCandidates.length > 0) {
+                // picked tallest
+                const best = centerCandidates.reduce((prev, current) => (prev.h > current.h) ? prev : current);
+                best.hasBillboard = true;
+                const horizonY = this.renderHeight * 0.55;
+                this.billboard = { x: best.x + 2, y: horizonY - best.h - 24, w: best.w - 4, h: 22, assigned: true };
+            }
         }
     }
 
@@ -836,13 +851,15 @@ class CityRenderer {
 
             // Status Color
             let statusColor = status >= 70 ? '#0f0' : (status >= 40 ? '#ff0' : '#f00');
-            if (status < 40 && this.time % 1 > 0.5) statusColor = '#600'; // Flicker
+            // Brighter red for visibility
+            if (status < 40 && this.time % 1 > 0.5) statusColor = '#ff3333';
 
-            // Text
+            // Text - Larger and clearer
             this.ctx.fillStyle = statusColor;
-            this.ctx.font = 'bold 8px monospace';
+            this.ctx.font = 'bold 11px monospace';
+            this.ctx.textBaseline = 'middle';
             this.ctx.textAlign = 'center';
-            this.ctx.fillText(`${Math.floor(status)}%`, bx + bw / 2, by + bh - 3);
+            this.ctx.fillText(`${Math.floor(status)}%`, bx + bw / 2, by + bh / 2 + 1);
 
             // Scanlines
             this.ctx.fillStyle = 'rgba(0,0,0,0.3)';
