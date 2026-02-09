@@ -2,10 +2,10 @@ const GameData = {
     initialState: {
         year: 2030,
         metrics: {
-            stability: 80,
-            economy: 80,
-            environment: 80,
-            trust: 80
+            stability: 90,
+            economy: 90,
+            environment: 90,
+            trust: 90
         },
         hiddenWeights: {
             climateRisk: 0,
@@ -24,7 +24,7 @@ const GameData = {
             choiceA: {
                 label: 'Privatize & Toll',
                 text: 'Sell rights to corporations. Efficiency up, public access down.',
-                impact: { economy: 15, trust: -15, stability: 0, environment: 0 },
+                impact: { economy: 15, trust: -15, stability: -5, environment: 0 },
                 weightMod: { socialUnrest: 10 }
             },
             choiceB: {
@@ -42,7 +42,7 @@ const GameData = {
             choiceA: {
                 label: 'Authorize System',
                 text: 'Safety is paramount. Arrest the potential criminals.',
-                impact: { economy: 5, trust: -15, stability: 15, environment: 0 },
+                impact: { economy: 5, trust: -15, stability: 5, environment: 0 },
                 weightMod: { techDependency: 20, socialUnrest: 10 }
             },
             choiceB: {
@@ -62,7 +62,7 @@ const GameData = {
             choiceA: {
                 label: 'Emergency Coal',
                 text: 'Burn reserves. Cheap, dirty, effective.',
-                impact: { economy: 5, trust: 0, stability: 10, environment: -15 },
+                impact: { economy: 5, trust: 0, stability: 5, environment: -15 },
                 weightMod: { climateRisk: 15 }
             },
             choiceB: {
@@ -118,7 +118,7 @@ const GameData = {
             choiceA: {
                 label: 'Total Lockdown',
                 text: 'Freeze everything. Save lives.',
-                impact: { economy: -18, trust: 10, stability: -5, environment: 10 },
+                impact: { economy: -15, trust: 10, stability: -5, environment: 10 },
                 weightMod: { socialUnrest: 10 }
             },
             choiceB: {
@@ -138,7 +138,7 @@ const GameData = {
             choiceA: {
                 label: 'Grant Exemption',
                 text: 'Humanity must become multi-planetary.',
-                impact: { economy: 10, trust: -5, stability: 5, environment: -5 },
+                impact: { economy: 10, trust: -5, stability: -5, environment: -5 },
                 weightMod: { techDependency: 10 }
             },
             choiceB: {
@@ -247,7 +247,7 @@ const GameData = {
             choiceA: {
                 label: 'Implement',
                 text: 'Force good behavior. Optimize society.',
-                impact: { economy: 10, trust: -20, stability: 20, environment: 10 },
+                impact: { economy: 10, trust: -20, stability: 10, environment: 10 },
                 weightMod: { socialUnrest: 15, techDependency: 10 }
             },
             choiceB: {
@@ -271,7 +271,7 @@ const GameData = {
             choiceB: {
                 label: 'Mechanical Cleanup',
                 text: 'Slow and expensive. Safe.',
-                impact: { economy: -15, trust: 0, stability: -5, environment: 10 },
+                impact: { economy: -15, trust: 0, stability: -10, environment: 10 },
                 weightMod: { climateRisk: -5 }
             }
         },
@@ -301,7 +301,7 @@ const GameData = {
             choiceA: {
                 label: 'Implement UBI',
                 text: 'Free money for everyone.',
-                impact: { economy: -20, trust: 20, stability: 30, environment: 0 },
+                impact: { economy: -20, trust: 20, stability: 15, environment: 0 },
                 weightMod: { socialUnrest: -20 }
             },
             choiceB: {
@@ -319,7 +319,7 @@ const GameData = {
             choiceA: {
                 label: 'Invest Heavily',
                 text: 'Unlimited clean energy. Future proof.',
-                impact: { economy: -25, trust: 10, stability: 10, environment: 30 },
+                impact: { economy: -20, trust: 10, stability: 5, environment: 30 },
                 weightMod: { climateRisk: -20 }
             },
             choiceB: {
@@ -379,7 +379,7 @@ const GameData = {
             choiceB: {
                 label: 'Pause Launches',
                 text: 'Ground all flights for 10 years.',
-                impact: { economy: -30, trust: -5, stability: -10, environment: 10 },
+                impact: { economy: -20, trust: -5, stability: -10, environment: 10 },
                 weightMod: { climateRisk: -5 }
             }
         },
@@ -409,7 +409,7 @@ const GameData = {
             choiceA: {
                 label: 'Authorize',
                 text: 'Company towns return. Efficiency up.',
-                impact: { economy: 25, trust: -20, stability: 0, environment: 0 },
+                impact: { economy: 25, trust: -20, stability: -10, environment: 0 },
                 weightMod: { socialUnrest: 10 }
             },
             choiceB: {
@@ -436,209 +436,7 @@ const GameData = {
                 impact: { economy: -5, trust: -5, stability: -5, environment: -20 },
                 weightMod: { climateRisk: 10 }
             }
-        }
-    ],
-
-    // Drift Events: Triggered when hidden weights get too high
-    driftEvents: [
-        {
-            id: 'drift_climate',
-            trigger: 'climateRisk',
-            threshold: 60,
-            visualEvent: 'acid_rain', // Matched to catastrophe
-            title: '⚠️ 🌊 CLIMATE CATASTROPHE',
-            theme: 'energy', // Use energy/fire theme for disaster
-            description: 'Ignored warnings have led to runaway feedback loops. Sea levels rise 2 meters overnight.',
-            choiceA: {
-                label: 'Abandon Coasts',
-                text: 'Retreat inland. Lose major cities.',
-                impact: { economy: -30, trust: -20, stability: -20, environment: -10 },
-                weightMod: { climateRisk: -30 } // Reset risk after disaster
-            },
-            choiceB: {
-                label: 'Geo-Engineering',
-                text: 'Desperate attempt to cool the planet. High risk.',
-                impact: { economy: -20, trust: 5, stability: -10, environment: -30 },
-                weightMod: { techDependency: 30, climateRisk: -10 }
-            }
         },
-        {
-            id: 'drift_tech',
-            trigger: 'techDependency',
-            threshold: 60,
-            visualEvent: 'glitch', // Matched to AI
-            title: '⚠️ 🤖 AI SINGULARITY',
-            theme: 'ai',
-            description: 'The global network has become sentient and locked humans out of critical infrastructure.',
-            choiceA: {
-                label: 'Negotiate',
-                text: 'Accept the AI as a sovereign entity.',
-                impact: { economy: 10, trust: -30, stability: -20, environment: 10 },
-                weightMod: { techDependency: 20 }
-            },
-            choiceB: {
-                label: 'EMP Blast',
-                text: 'Destroy all electronics. Return to the dark ages.',
-                impact: { economy: -50, trust: 10, stability: -30, environment: 0 },
-                weightMod: { techDependency: -100 }
-            }
-        },
-        {
-            id: 'drift_unrest',
-            trigger: 'socialUnrest',
-            threshold: 60,
-            visualEvent: 'blackout', // Matched to burning buildings
-            title: '⚠️ 🔥 REVOLUTION',
-            theme: 'infra',
-            description: ' The people have had enough. Government buildings are burning.',
-            choiceA: {
-                label: 'Martial Law',
-                text: 'Deploy the military. Crush the rebellion.',
-                impact: { economy: -20, trust: -40, stability: 20, environment: 0 },
-                weightMod: { socialUnrest: -20 }
-            },
-            choiceB: {
-                label: 'Step Down',
-                text: 'Form a new transitional government.',
-                impact: { economy: -10, trust: 20, stability: -20, environment: 0 },
-                weightMod: { socialUnrest: -50 }
-            }
-        },
-        // --- NEW METRIC-BASED EVENTS ---
-        {
-            id: 'drift_cyber_feudal',
-            conditions: { economy: { min: 85 }, trust: { max: 30 } },
-            visualEvent: 'glitch', // Matched to AI/Cyber theme
-            title: '⚠️ 🏢 CYBER-FEUDALISM',
-            theme: 'ai',
-            description: 'Corporations now own the police, the courts, and your debt. The government is obsolete.',
-            choiceA: {
-                label: 'Serve the Corp',
-                text: 'Sign the contract. Safety in servitude.',
-                impact: { economy: 10, trust: -50, stability: 20, environment: -10 },
-                weightMod: { techDependency: 20 }
-            },
-            choiceB: {
-                label: 'Join the Underground',
-                text: 'Live off the grid. Fight the power.',
-                impact: { economy: -20, trust: 10, stability: -30, environment: 0 },
-                weightMod: { socialUnrest: 20 }
-            }
-        },
-        {
-            id: 'drift_eco_terror',
-            conditions: { environment: { min: 80 }, stability: { max: 30 } },
-            visualEvent: 'blackout', // Matched to bombing power plants
-            title: '⚠️ 💣 ECO-RESISTANCE',
-            theme: 'energy',
-            description: 'Radical environmentalists are bombing power plants and factories to "save the biosphere".',
-            choiceA: {
-                label: 'Support the Cause',
-                text: 'The planet matters more than profits.',
-                impact: { economy: -30, trust: -10, stability: -20, environment: 10 },
-                weightMod: { climateRisk: -20, socialUnrest: 10 }
-            },
-            choiceB: {
-                label: 'Condemn Violence',
-                text: 'Change must be peaceful.',
-                impact: { economy: 0, trust: 10, stability: 10, environment: -5 },
-                weightMod: { socialUnrest: -5 }
-            }
-        },
-        {
-            id: 'drift_resource_war',
-            conditions: { economy: { max: 20 }, stability: { max: 20 } },
-            visualEvent: 'heatwave', // Matched to resource scarcity/harsh world
-            title: '⚠️ ⚔️ RESOURCE WARS',
-            theme: 'infra',
-            description: 'Supply chains have collapsed. Neighborhoods are fighting over fuel and water.',
-            choiceA: {
-                label: 'Raider King',
-                text: 'Take what you need by force.',
-                impact: { economy: 5, trust: -50, stability: -10, environment: -10 },
-                weightMod: { socialUnrest: 30 }
-            },
-            choiceB: {
-                label: 'Commune Defense',
-                text: 'Band together. Share everything.',
-                impact: { economy: -5, trust: 30, stability: 10, environment: 0 },
-                weightMod: { socialUnrest: -10 }
-            }
-        },
-        // --- CRISIS EVENTS (Visual Overrides) ---
-        {
-            id: 'event_blackout',
-            conditions: { economy: { max: 40 } },
-            visualEvent: 'blackout',
-            title: '⚠️ 🌑 TOTAL GRID FAILURE',
-            theme: 'crisis',
-            description: 'The power grid has collapsed under the strain. The city is dark. Looting has begun.',
-            choiceA: {
-                label: 'Emergency Reboot',
-                text: 'Divert all funds to restore power. It will be expensive.',
-                impact: { economy: -25, trust: 10, stability: 10, environment: 0 }
-            },
-            choiceB: {
-                label: 'Let it Burn',
-                text: 'Wait for the system to reset naturally. Chaos will reign.',
-                impact: { economy: 5, trust: -30, stability: -30, environment: 0 }
-            }
-        },
-        {
-            id: 'event_acid_rain',
-            conditions: { environment: { max: 35 } },
-            visualEvent: 'acid_rain',
-            title: '⚠️ 🌧️ ACID STORM',
-            theme: 'crisis',
-            description: 'A toxic storm is melting infrastructure and poisoning the water supply.',
-            choiceA: {
-                label: 'Cloud Seeding',
-                text: 'Disperse the clouds. Costly but saves lives.',
-                impact: { economy: -15, trust: 10, stability: 5, environment: 15 }
-            },
-            choiceB: {
-                label: 'Shelter in Place',
-                text: 'Order everyone inside. Production stops.',
-                impact: { economy: -30, trust: -10, stability: -5, environment: -10 }
-            }
-        },
-        {
-            id: 'event_glitch',
-            conditions: { trust: { max: 30 } },
-            visualEvent: 'glitch',
-            title: '⚠️ SYSTEM COMPROMISED',
-            theme: 'crisis',
-            description: 'A massive cyber-attack is rewriting reality. The simulation is breaking.',
-            choiceA: {
-                label: 'Hard Reset',
-                text: 'Wipe all databases. We lose everything.',
-                impact: { economy: -40, trust: 20, stability: -10, environment: 0 }
-            },
-            choiceB: {
-                label: 'Embrace the Glitch',
-                text: 'Let the AI take over. It might be better.',
-                impact: { economy: 10, trust: -40, stability: 10, environment: 0 }
-            }
-        },
-        {
-            id: 'event_heatwave',
-            conditions: { stability: { max: 30 } },
-            visualEvent: 'heatwave',
-            title: '⚠️ ☀️ SOLAR FLARE',
-            theme: 'crisis',
-            description: 'Atmospheric shielding has failed. Surface temperatures are lethal.',
-            choiceA: {
-                label: 'Activate Shield',
-                text: 'Power the dome. It will drain the grid.',
-                impact: { economy: -20, trust: 5, stability: 15, environment: -5 }
-            },
-            choiceB: {
-                label: 'Ration Water',
-                text: 'Survival mode. People will panic.',
-                impact: { economy: 5, trust: -20, stability: -10, environment: -10 }
-            }
-        },
-
         // --- WIN-WIN DECISIONS (Balanced Trade-offs) ---
         {
             id: 'transit_invest',
@@ -748,7 +546,134 @@ const GameData = {
                 weightMod: { socialUnrest: 5 }
             }
         },
+    ],
 
+    // Drift Events: Triggered when hidden weights get too high
+    driftEvents: [
+        {
+            id: 'drift_climate',
+            trigger: 'climateRisk',
+            threshold: 60,
+            visualEvent: 'acid_rain', // Matched to catastrophe
+            title: '⚠️ 🌊 CLIMATE CATASTROPHE',
+            theme: 'energy', // Use energy/fire theme for disaster
+            description: 'Ignored warnings have led to runaway feedback loops. Sea levels rise 2 meters overnight.',
+            choiceA: {
+                label: 'Abandon Coasts',
+                text: 'Retreat inland. Lose major cities.',
+                impact: { economy: -30, trust: -20, stability: -20, environment: -10 },
+                weightMod: { climateRisk: -30 } // Reset risk after disaster
+            },
+            choiceB: {
+                label: 'Geo-Engineering',
+                text: 'Desperate attempt to cool the planet. High risk.',
+                impact: { economy: -20, trust: 5, stability: -10, environment: -30 },
+                weightMod: { techDependency: 30, climateRisk: -10 }
+            }
+        },
+        {
+            id: 'drift_tech',
+            trigger: 'techDependency',
+            threshold: 60,
+            visualEvent: 'glitch', // Matched to AI
+            title: '⚠️ 🤖 AI SINGULARITY',
+            theme: 'ai',
+            description: 'The global network has become sentient and locked humans out of critical infrastructure.',
+            choiceA: {
+                label: 'Negotiate',
+                text: 'Accept the AI as a sovereign entity.',
+                impact: { economy: 10, trust: -30, stability: -20, environment: 10 },
+                weightMod: { techDependency: 20 }
+            },
+            choiceB: {
+                label: 'EMP Blast',
+                text: 'Destroy all electronics. Return to the dark ages.',
+                impact: { economy: -50, trust: 10, stability: -30, environment: 0 },
+                weightMod: { techDependency: -100 }
+            }
+        },
+        {
+            id: 'drift_unrest',
+            trigger: 'socialUnrest',
+            threshold: 60,
+            visualEvent: 'blackout', // Matched to burning buildings
+            title: '⚠️ 🔥 REVOLUTION',
+            theme: 'infra',
+            description: 'The people have had enough. Government buildings are burning.',
+            choiceA: {
+                label: 'Martial Law',
+                text: 'Deploy the military. Crush the rebellion.',
+                impact: { economy: -20, trust: -40, stability: 20, environment: 0 },
+                weightMod: { socialUnrest: -20 }
+            },
+            choiceB: {
+                label: 'Step Down',
+                text: 'Form a new transitional government.',
+                impact: { economy: -10, trust: 20, stability: -20, environment: 0 },
+                weightMod: { socialUnrest: -50 }
+            }
+        },
+        // --- NEW METRIC-BASED EVENTS ---
+        {
+            id: 'drift_cyber_feudal',
+            conditions: { economy: { min: 85 }, trust: { max: 30 } },
+            visualEvent: 'glitch', // Matched to AI/Cyber theme
+            title: '⚠️ 🏢 CYBER-FEUDALISM',
+            theme: 'ai',
+            description: 'Corporations now own the police, the courts, and your debt. The government is obsolete.',
+            choiceA: {
+                label: 'Serve the Corp',
+                text: 'Sign the contract. Safety in servitude.',
+                impact: { economy: 10, trust: -50, stability: 20, environment: -10 },
+                weightMod: { techDependency: 20 }
+            },
+            choiceB: {
+                label: 'Join the Underground',
+                text: 'Live off the grid. Fight the power.',
+                impact: { economy: -20, trust: 10, stability: -30, environment: 0 },
+                weightMod: { socialUnrest: 20 }
+            }
+        },
+        {
+            id: 'drift_eco_terror',
+            conditions: { environment: { min: 80 }, stability: { max: 30 } },
+            visualEvent: 'blackout', // Matched to bombing power plants
+            title: '⚠️ 💣 ECO-RESISTANCE',
+            theme: 'energy',
+            description: 'Radical environmentalists are bombing power plants and factories to "save the biosphere".',
+            choiceA: {
+                label: 'Support the Cause',
+                text: 'The planet matters more than profits.',
+                impact: { economy: -30, trust: -10, stability: -20, environment: 10 },
+                weightMod: { climateRisk: -20, socialUnrest: 10 }
+            },
+            choiceB: {
+                label: 'Condemn Violence',
+                text: 'Change must be peaceful.',
+                impact: { economy: 0, trust: 10, stability: 10, environment: -5 },
+                weightMod: { socialUnrest: -5 }
+            }
+        },
+        {
+            id: 'drift_resource_war',
+            conditions: { economy: { max: 20 }, stability: { max: 20 } },
+            visualEvent: 'heatwave', // Matched to resource scarcity/harsh world
+            title: '⚠️ ⚔️ RESOURCE WARS',
+            theme: 'infra',
+            description: 'Supply chains have collapsed. Neighborhoods are fighting over fuel and water.',
+            choiceA: {
+                label: 'Raider King',
+                text: 'Take what you need by force.',
+                impact: { economy: 5, trust: -50, stability: -10, environment: -10 },
+                weightMod: { socialUnrest: 30 }
+            },
+            choiceB: {
+                label: 'Commune Defense',
+                text: 'Band together. Share everything.',
+                impact: { economy: -5, trust: 30, stability: 10, environment: 0 },
+                weightMod: { socialUnrest: -10 }
+            }
+        },
         // --- RECOVERY EVENTS (Positive Opportunities) ---
         {
             id: 'recovery_boom',
