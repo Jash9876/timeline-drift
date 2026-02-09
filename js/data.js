@@ -2,10 +2,10 @@ const GameData = {
     initialState: {
         year: 2030,
         metrics: {
-            stability: 90,
-            economy: 90,
-            environment: 90,
-            trust: 90
+            stability: 80,
+            economy: 80,
+            environment: 80,
+            trust: 80
         },
         hiddenWeights: {
             climateRisk: 0,
