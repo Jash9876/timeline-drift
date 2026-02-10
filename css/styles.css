@@ -8,6 +8,8 @@
     --primary-red: #ff003c;
     --primary-yellow: #ffcc00;
     --alert-red: #ff2a2a;
+    --neon-purple: #bc13fe;
+    /* Added missing variable */
     /* Changed value */
     --success-green: #00ff9d;
     --warn-yellow: #ffcc00;
@@ -827,7 +829,6 @@ canvas {
     border-radius: 8px;
     padding: 2rem;
     position: relative;
-    overflow: hidden;
     pointer-events: auto;
 }
 
@@ -1165,55 +1166,115 @@ canvas {
     color: var(--text-dim);
 }
 
-#scan-btn {
+/* --- HUD: Bottom Controls --- */
+.hud-bottom-left {
+    position: fixed;
+    bottom: 2rem;
     left: 2rem;
-    right: auto;
-    bottom: 2rem;
-    bottom: calc(2rem + env(safe-area-inset-bottom));
+    display: flex;
+    gap: 1rem;
+    z-index: 100;
 }
 
-#recovery-btn {
-    left: 6rem;
-    /* Next to scanner button */
-    right: auto;
+.hud-bottom-right {
+    position: fixed;
     bottom: 2rem;
-    bottom: calc(2rem + env(safe-area-inset-bottom));
-}
-
-#crisis-btn {
-    right: 6rem;
-    /* Next to mute button */
-    bottom: 2rem;
-    bottom: calc(2rem + env(safe-area-inset-bottom));
-}
-
-#mute-btn {
     right: 2rem;
-    bottom: 2rem;
-    bottom: calc(2rem + env(safe-area-inset-bottom));
+    display: flex;
+    gap: 1rem;
+    z-index: 100;
+}
+
+/* Individual buttons now flow within containers */
+#scan-btn,
+#mute-btn,
+#recovery-btn,
+#crisis-btn,
+#drift-btn {
+    position: relative !important;
+    bottom: auto !important;
+    left: auto !important;
+    right: auto !important;
+    top: auto !important;
+}
+
+/* #drift-btn default style removed to match other buttons */
+
+#drift-btn:hover,
+#drift-btn.active {
+    background: var(--neon-purple);
+    color: #fff;
+    box-shadow: 0 0 20px var(--neon-purple);
+}
+
+/* --- Overlays (Base) --- */
+#scanner-overlay,
+#recovery-overlay,
+#crisis-overlay,
+#drift-overlay {
+    position: fixed;
+    top: 50%;
+    bottom: auto;
+    /* Centered Vertically */
+    z-index: 999;
+    transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(-50%);
+}
+
+#scanner-overlay {
+    left: 2rem;
+    width: 300px;
+}
+
+/* Unified Right-Side Position for Recovery, Crisis, Drift */
+#recovery-overlay,
+#crisis-overlay,
+#drift-overlay {
+    left: auto !important;
+    right: 2rem;
+    width: 300px;
+    transform: translateY(-50%);
+}
+
+/* Hidden State: Slide Down off-center */
+#scanner-overlay.hidden,
+#recovery-overlay.hidden,
+#crisis-overlay.hidden,
+#drift-overlay.hidden {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(calc(-50% + 20px));
+    pointer-events: none;
+    display: block !important;
+}
+
+/* Drift Overlay Specifics */
+#drift-overlay .scanner-content {
+    box-shadow: 0 0 20px rgba(188, 19, 254, 0.2);
+}
+
+.mini-bar-bg {
+    width: 100%;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    margin-top: 4px;
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.mini-bar-fill {
+    height: 100%;
+    background: var(--neon-purple);
+    width: 0%;
+    transition: width 1s ease;
+    box-shadow: 0 0 5px var(--neon-purple);
 }
 
 
 /* --- Scanner Overlay --- */
-#scanner-overlay {
-    position: fixed;
-    top: 50%;
-    left: 2rem;
-    transform: translateY(-50%) translateX(0);
-    width: clamp(260px, 20vw, 320px);
-    z-index: 1000;
-    transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.4, 0.0, 0.2, 1), visibility 0.3s;
-    opacity: 1;
-    visibility: visible;
-}
-
-#scanner-overlay.hidden {
-    display: block !important;
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
-    transform: translateY(-50%) translateX(-20px);
-}
+/* Old Scanner Overlay Styles Removed */
 
 .scanner-content {
     background: rgba(0, 10, 20, 0.9);
@@ -1228,50 +1289,14 @@ canvas {
 }
 
 /* --- Recovery Overlay (Left Side) --- */
-#recovery-overlay {
-    position: fixed;
-    top: 50%;
-    left: 2rem;
-    transform: translateY(-50%) translateX(0);
-    width: clamp(260px, 20vw, 320px);
-    z-index: 1000;
-    transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.4, 0.0, 0.2, 1), visibility 0.3s;
-    opacity: 1;
-    visibility: visible;
-}
-
-#recovery-overlay.hidden {
-    display: block !important;
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
-    transform: translateY(-50%) translateX(-20px);
-}
+/* Old Recovery Overlay Styles Removed */
 
 #recovery-overlay .scanner-content {
     box-shadow: 0 0 20px rgba(0, 255, 150, 0.2);
 }
 
-/* --- Crisis Overlay (Right Side) --- */
-#crisis-overlay {
-    position: fixed;
-    top: 50%;
-    right: 2rem;
-    transform: translateY(-50%) translateX(0);
-    width: clamp(260px, 20vw, 320px);
-    z-index: 1000;
-    transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.4, 0.0, 0.2, 1), visibility 0.3s;
-    opacity: 1;
-    visibility: visible;
-}
-
-#crisis-overlay.hidden {
-    display: block !important;
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
-    transform: translateY(-50%) translateX(20px);
-}
+/* --- Crisis Overlay (Cleaned) --- */
+/* Consolidated Overlay Hiding Logic above */
 
 #crisis-overlay .scanner-content {
     box-shadow: 0 0 20px rgba(255, 0, 60, 0.2);
@@ -1289,11 +1314,7 @@ canvas {
     }
 }
 
-#crisis-btn {
-    bottom: 2rem;
-    right: 6rem;
-    /* Next to mute button */
-}
+/* Removed individual button positioning */
 
 #crisis-btn.active {
     background: var(--alert-red);
@@ -1863,4 +1884,390 @@ body {
     .stat-row span:last-child {
         font-size: 1.4rem;
     }
+}
+
+/* --- CARD THEMES --- */
+.card {
+    transition: all 0.3s ease;
+    position: relative;
+    border: 1px solid rgba(0, 243, 255, 0.2);
+}
+
+.card.crisis {
+    border-color: var(--alert-red);
+    box-shadow: 0 0 15px rgba(255, 0, 60, 0.2), inset 0 0 20px rgba(255, 0, 60, 0.05);
+}
+
+.card.drift {
+    border-color: var(--neon-purple);
+    box-shadow: 0 0 15px rgba(188, 19, 254, 0.2), inset 0 0 50px rgba(188, 19, 254, 0.1);
+    background: linear-gradient(135deg, rgba(20, 0, 30, 0.95), rgba(0, 0, 0, 0.95));
+}
+
+.card.recovery {
+    border-color: var(--success-green);
+    box-shadow: 0 0 15px rgba(0, 255, 150, 0.2), inset 0 0 20px rgba(0, 255, 150, 0.05);
+}
+
+/* --- SPECIAL DRIFT EFFECTS --- */
+/* --- SPECIAL DRIFT EFFECTS --- */
+.card-effect-sepia {
+    filter: sepia(0.8) contrast(1.2);
+    box-shadow: 0 0 20px rgba(180, 140, 60, 0.3), inset 0 0 50px rgba(60, 40, 0, 0.5) !important;
+    border-color: rgba(180, 140, 60, 0.8) !important;
+    background: linear-gradient(135deg, #2b1d0e, #0f0a05) !important;
+}
+
+.card-effect-sepia .card-desc {
+    font-family: 'Courier New', monospace;
+    /* Old typewriter feel */
+    color: #e0cca0;
+}
+
+.card-effect-glitch {
+    animation: drift-wave 4s infinite ease-in-out;
+    border-color: var(--neon-purple) !important;
+    box-shadow: 0 0 20px rgba(188, 19, 254, 0.4), inset 0 0 30px rgba(50, 0, 80, 0.5) !important;
+    /* No bg change, keep purple drift default */
+}
+
+@keyframes drift-wave {
+
+    0%,
+    100% {
+        transform: skewX(0deg) scale(1);
+        filter: hue-rotate(0deg);
+    }
+
+    25% {
+        transform: skewX(2deg) scale(1.01);
+        filter: hue-rotate(10deg);
+    }
+
+    75% {
+        transform: skewX(-2deg) scale(0.99);
+        filter: hue-rotate(-10deg);
+    }
+}
+
+
+
+.card-effect-severe-glitch {
+    animation: glitch-anim-severe 0.1s infinite;
+    border-color: #ff0000 !important;
+    box-shadow: 0 0 20px #ff0000, 3px 3px 0px #00ffff !important;
+    filter: contrast(1.5) hue-rotate(90deg);
+}
+
+@keyframes glitch-anim-severe {
+    0% {
+        transform: translate(0) scale(1.0);
+        clip-path: inset(0 0 0 0);
+    }
+
+    20% {
+        transform: translate(-5px, 5px) skewX(5deg);
+        clip-path: inset(10% 0 80% 0);
+    }
+
+    40% {
+        transform: translate(-5px, -5px) skewX(-5deg);
+        clip-path: inset(80% 0 10% 0);
+    }
+
+    60% {
+        transform: translate(5px, 5px) skewX(5deg);
+        clip-path: inset(40% 0 40% 0);
+    }
+
+    80% {
+        transform: translate(5px, -5px) skewX(-5deg);
+        clip-path: inset(10% 0 50% 0);
+    }
+
+    100% {
+        transform: translate(0) scale(1.01);
+        clip-path: inset(0 0 0 0);
+    }
+}
+
+
+.card-effect-blur #card-desc,
+.card-effect-blur .choices {
+    filter: blur(1.5px);
+    transition: filter 0.8s ease;
+    opacity: 0.6;
+}
+
+.card-effect-blur {
+    border-color: #888 !important;
+    box-shadow: 0 0 20px rgba(100, 100, 100, 0.3) !important;
+    background: linear-gradient(135deg, #1a1a1a, #000) !important;
+    animation: ghost-fade 4s infinite alternate;
+}
+
+@keyframes ghost-fade {
+    from {
+        opacity: 0.9;
+    }
+
+    to {
+        opacity: 0.7;
+    }
+}
+
+.card-effect-blur:hover #card-desc,
+.card-effect-blur:hover .choices {
+    filter: blur(0);
+    opacity: 1;
+}
+
+.card-effect-holy {
+    box-shadow: 0 0 40px rgba(255, 215, 0, 0.5), inset 0 0 40px rgba(255, 215, 0, 0.2) !important;
+    border-color: #ffd700 !important;
+    background: linear-gradient(135deg, #332b00, #1a1500) !important;
+    animation: holy-pulse 3s infinite ease-in-out;
+}
+
+@keyframes holy-pulse {
+
+    0%,
+    100% {
+        box-shadow: 0 0 30px rgba(255, 215, 0, 0.3);
+    }
+
+    50% {
+        box-shadow: 0 0 50px rgba(255, 215, 0, 0.6);
+    }
+}
+
+.type-badge {
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(10, 10, 18, 0.95);
+    padding: 4px 12px;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.8rem;
+    border: 1px solid var(--primary-cyan);
+    color: var(--primary-cyan);
+    letter-spacing: 2px;
+    z-index: 10;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    white-space: nowrap;
+}
+
+.card.crisis .type-badge {
+    border-color: var(--alert-red);
+    color: var(--alert-red);
+    text-shadow: 0 0 5px var(--alert-red);
+}
+
+.card.drift .type-badge {
+    border-color: var(--neon-purple);
+    color: var(--neon-purple);
+    text-shadow: 0 0 5px var(--neon-purple);
+    animation: pulse-drift-badge 2s infinite;
+}
+
+@keyframes pulse-drift-badge {
+
+    0%,
+    100% {
+        box-shadow: 0 0 10px rgba(188, 19, 254, 0.5);
+        opacity: 1;
+    }
+
+    50% {
+        box-shadow: 0 0 20px rgba(188, 19, 254, 0.8);
+        opacity: 0.8;
+    }
+}
+
+.card.recovery .type-badge {
+    border-color: var(--success-green);
+    color: var(--success-green);
+    text-shadow: 0 0 5px var(--success-green);
+}
+
+/* --- LEGEND OVERLAY --- */
+#legend-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(10, 10, 18, 0.8);
+    border: 1px solid var(--primary-cyan);
+    color: var(--primary-cyan);
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.2rem;
+    cursor: pointer;
+    z-index: 100;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#legend-btn:hover {
+    background: rgba(0, 243, 255, 0.2);
+    box-shadow: 0 0 10px var(--primary-cyan);
+}
+
+#legend-overlay {
+    position: absolute;
+    top: 70px;
+    /* Below the button */
+    right: 20px;
+    width: 250px;
+    background: rgba(10, 10, 18, 0.95);
+    border: 1px solid var(--primary-cyan);
+    padding: 15px;
+    z-index: 99;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+    transform-origin: top right;
+    transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+
+#legend-overlay.hidden {
+    opacity: 0;
+    transform: scale(0.9);
+    pointer-events: none;
+}
+
+.legend-title {
+    font-family: 'Orbitron', sans-serif;
+    color: var(--primary-cyan);
+    font-size: 0.9rem;
+    margin-bottom: 12px;
+    text-align: center;
+    border-bottom: 1px solid rgba(0, 243, 255, 0.2);
+    padding-bottom: 8px;
+    letter-spacing: 2px;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.85rem;
+    color: #ccc;
+}
+
+.legend-item:last-child {
+    margin-bottom: 0;
+}
+
+.legend-color {
+    width: 12px;
+    height: 12px;
+    margin-right: 10px;
+    box-shadow: 0 0 5px currentColor;
+    flex-shrink: 0;
+}
+
+.legend-desc {
+    font-size: 0.75rem;
+    opacity: 0.7;
+    margin-left: auto;
+}
+
+/* --- MINI BARS (Drift & Hidden Stats) --- */
+.drift-item {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 12px;
+}
+
+.drift-info {
+    display: flex;
+    align-items: center;
+    margin-bottom: 4px;
+    font-size: 0.75rem;
+    color: var(--text-dim);
+}
+
+.drift-info .icon {
+    width: 20px;
+    text-align: center;
+    margin-right: 8px;
+}
+
+.mini-bar-bg {
+    width: 100%;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.mini-bar-fill {
+    height: 100%;
+    background: var(--neon-purple);
+    width: 0%;
+    transition: width 0.5s ease-out, background-color 0.5s ease;
+    box-shadow: 0 0 8px currentColor;
+}
+
+/* --- How to Play Mechanics Grid --- */
+.mechanics-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    margin: 1rem 0;
+}
+
+.mech-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 0.8rem;
+    border-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    text-align: center;
+}
+
+.mech-item .icon {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.mech-item .label {
+    font-size: 0.7rem;
+    color: var(--text-dim);
+    letter-spacing: 1px;
+    margin-bottom: 0.25rem;
+}
+
+.mech-item .value {
+    font-size: 0.9rem;
+    font-weight: 700;
+}
+
+.mech-item .desc {
+    font-size: 0.65rem;
+    color: #888;
+    margin-top: 0.25rem;
+    line-height: 1.2;
+}
+
+.mechanics-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    font-size: 0.85rem;
+    color: #ccc;
+}
+
+.mechanics-list li {
+    margin-bottom: 0.5rem;
+    padding-left: 1rem;
+    border-left: 2px solid var(--primary-cyan);
 }

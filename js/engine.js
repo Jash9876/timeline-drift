@@ -27,7 +27,10 @@ class GameEngine {
                 if (val < 0) {
                     const turnsPlayed = this.gameState.year - 2030;
                     // Smooth linear scaling from 1.4x to 2.0x over 20 turns
-                    const penaltyMultiplier = 1.4 + Math.min(0.6, turnsPlayed * 0.03);
+                    // NEW LOGIC: Start 1.0x, +0.1 every 2 years, Cap 2.0x at 2050
+                    // turnsPlayed = 0 (2030) -> 1.0
+                    // turnsPlayed = 20 (2050) -> 1.0 + (10 * 0.1) = 2.0
+                    const penaltyMultiplier = 1.0 + Math.min(1.0, Math.floor(turnsPlayed / 2) * 0.1);
                     val = Math.floor(val * penaltyMultiplier);
                 }
 
@@ -102,7 +105,7 @@ class GameEngine {
             if (triggered) {
                 // 30% chance to trigger per turn if conditions met
                 // prioritizing unlikely events
-                if (Math.random() < 0.3) {
+                if (Math.random() < 0.45) {
                     this.lastTurnWasCrisis = true;
                     // Set cooldown (prevent spamming same event)
                     this.eventCooldowns[event.id] = 8;

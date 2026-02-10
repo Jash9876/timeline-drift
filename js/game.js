@@ -5,6 +5,7 @@ class GameController {
         this.engine = new GameEngine();
         this.ui = new UIManager();
         this.sound = new SoundManager();
+        this.ui.sound = this.sound; // Inject sound manager for UI interactions
         this.visualizer = new Visualizer('timeline-canvas');
 
         this.currentCard = null;
@@ -159,47 +160,9 @@ class GameController {
             this.ui.toggleLeaderboard(false);
         });
 
-        // LEFT SIDE PANELS: Scanner and Recovery (mutually exclusive)
-        const scanBtn = document.getElementById('scan-btn');
-        const scannerOverlay = document.getElementById('scanner-overlay');
-        if (scanBtn && scannerOverlay) {
-            scanBtn.addEventListener('click', () => {
-                // Close other LEFT panel
-                const recoveryOverlay = document.getElementById('recovery-overlay');
-                if (recoveryOverlay) recoveryOverlay.classList.add('hidden');
-                document.getElementById('recovery-btn')?.classList.remove('active');
+        // NOTE: Scanner, Recovery, Crisis, and Drift buttons are now handled exclusively by UIManager (ui.js).
+        // Sound is handled by injecting sound manager into UI.
 
-                scannerOverlay.classList.toggle('hidden');
-                scanBtn.classList.toggle('active');
-                this.sound.playClick();
-            });
-        }
-
-        const recoveryBtn = document.getElementById('recovery-btn');
-        const recoveryOverlay = document.getElementById('recovery-overlay');
-        if (recoveryBtn && recoveryOverlay) {
-            recoveryBtn.addEventListener('click', () => {
-                // Close other LEFT panel
-                const scannerOverlay = document.getElementById('scanner-overlay');
-                if (scannerOverlay) scannerOverlay.classList.add('hidden');
-                document.getElementById('scan-btn')?.classList.remove('active');
-
-                recoveryOverlay.classList.toggle('hidden');
-                recoveryBtn.classList.toggle('active');
-                this.sound.playClick();
-            });
-        }
-
-        // RIGHT SIDE PANELS: Crisis (no mutual exclusivity needed for now)
-        const crisisBtn = document.getElementById('crisis-btn');
-        const crisisOverlay = document.getElementById('crisis-overlay');
-        if (crisisBtn && crisisOverlay) {
-            crisisBtn.addEventListener('click', () => {
-                crisisOverlay.classList.toggle('hidden');
-                crisisBtn.classList.toggle('active');
-                this.sound.playClick();
-            });
-        }
 
         // Mute Button
         const muteBtn = document.getElementById('mute-btn');

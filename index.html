@@ -23,12 +23,17 @@
         <div id="grid-overlay"></div>
 
         <!-- Left Side Controls -->
-        <button id="scan-btn" class="icon-btn" aria-label="Toggle Scanner">📟</button>
-        <button id="recovery-btn" class="icon-btn recovery-btn" aria-label="Recovery Events">❤️‍🩹</button>
+        <!-- Bottom UI Controls -->
+        <div class="hud-bottom-left">
+            <button id="scan-btn" class="icon-btn" aria-label="Toggle Scanner">📟</button>
+            <button id="mute-btn" class="icon-btn" aria-label="Toggle Sound">🔊</button>
+        </div>
 
-        <!-- Right Side Controls -->
-        <button id="crisis-btn" class="icon-btn warning-btn" aria-label="Crisis Database">⚠️</button>
-        <button id="mute-btn" class="icon-btn" aria-label="Toggle Sound">🔊</button>
+        <div class="hud-bottom-right">
+            <button id="recovery-btn" class="icon-btn recovery-btn" aria-label="Recovery Events">❤️‍🩹</button>
+            <button id="crisis-btn" class="icon-btn warning-btn" aria-label="Crisis Database">⚠️</button>
+            <button id="drift-btn" class="icon-btn drift-btn" aria-label="Drift Prediction">🔮</button>
+        </div>
 
         <!-- Scanner Overlay -->
         <div id="scanner-overlay" class="hidden">
@@ -80,11 +85,11 @@
         <!-- Crisis Database Overlay -->
         <div id="crisis-overlay" class="hidden">
             <div class="scanner-content glass-panel" style="border-color: var(--alert-red);">
-                <h2 class="scanner-title" style="color: var(--alert-red); border-color: rgba(255, 0, 60, 0.3);">DRIFT
+                <h2 class="scanner-title" style="color: var(--alert-red); border-color: rgba(255, 0, 60, 0.3);">CRISIS
                     PREDICTION_DB</h2>
                 <ul class="scanner-list">
                     <li class="header" style="color: var(--alert-red); border-color: rgba(255, 0, 60, 0.2);">ANOMALY
-                        TRIGGERS</li>
+                        TRIGGERS (BASE PROB: 45%)</li>
 
                     <li><span class="icon">☀️</span> <span class="label">SOLAR FLARE</span> <span class="arrow">@</span>
                         <span class="value crit">&lt; 30% STABILITY</span>
@@ -133,6 +138,65 @@
                     <li class="separator"></li>
                     <li><span class="icon">⏳</span> <span class="label">RECOVERY CHANCE</span> <span
                             class="arrow">→</span> <span class="value warn">WHEN STRUGGLING</span></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Drift Prediction Overlay -->
+        <div id="drift-overlay" class="hidden">
+            <div class="scanner-content glass-panel" style="border-color: var(--neon-purple);">
+                <h2 class="scanner-title" style="color: var(--neon-purple); border-color: rgba(188, 19, 254, 0.3);">
+                    REALITY DRIFT MONITOR</h2>
+                <ul class="scanner-list">
+                    <li class="header" style="color: var(--neon-purple); border-color: rgba(188, 19, 254, 0.2);">
+                        HIDDEN RISK ACCUMULATION</li>
+
+                    <li class="drift-item">
+                        <div class="drift-info">
+                            <span class="icon">⏳</span> <span class="label">CHRONAL INSTABILITY</span>
+                        </div>
+                        <div class="mini-bar-bg">
+                            <div id="bar-drift-climate" class="mini-bar-fill"></div>
+                        </div>
+                    </li>
+                    <li class="drift-item">
+                        <div class="drift-info">
+                            <span class="icon">👁️</span> <span class="label">NEURAL DISSOCIATION</span>
+                        </div>
+                        <div class="mini-bar-bg">
+                            <div id="bar-drift-tech" class="mini-bar-fill"></div>
+                        </div>
+                    </li>
+                    <li class="drift-item">
+                        <div class="drift-info">
+                            <span class="icon">😶</span> <span class="label">MEMETIC CORRUPTION</span>
+                        </div>
+                        <div class="mini-bar-bg">
+                            <div id="bar-drift-unrest" class="mini-bar-fill"></div>
+                        </div>
+                    </li>
+                    <li class="drift-item">
+                        <div class="drift-info">
+                            <span class="icon">🛐</span> <span class="label">ALGORITHMIC THEOCRACY</span>
+                        </div>
+                        <div class="mini-bar-bg">
+                            <div id="bar-drift-theocracy" class="mini-bar-fill"></div>
+                        </div>
+                    </li>
+
+                    <li class="separator"></li>
+                    <li style="justify-content: center; opacity: 0.7; font-size: 0.7rem;">
+                        THRESHOLD: 60% = REALITY DECAY EVENT
+                    </li>
+                    <li class="header"
+                        style="color: var(--neon-purple); border-color: rgba(188, 19, 254, 0.2); margin-top: 1rem;">
+                        DRIFT MANIFESTATIONS</li>
+                    <li style="font-size: 0.7rem; color: #aaa; margin-bottom: 2px;">⏳ CHRONAL STORM (Time/Climate)</li>
+                    <li style="font-size: 0.7rem; color: #aaa; margin-bottom: 2px;">👁️ MASS HALLUCINATION
+                        (Tech/Reality)</li>
+                    <li style="font-size: 0.7rem; color: #aaa; margin-bottom: 2px;">😶 CULTURAL AMNESIA (Memory/Unrest)
+                    </li>
+                    <li style="font-size: 0.7rem; color: #aaa; margin-bottom: 2px;">🛐 ALGO-THEOCRACY (AI Worship)</li>
                 </ul>
             </div>
         </div>
@@ -209,39 +273,118 @@
                 <div class="how-to-play-content">
                     <section>
                         <h3>🎯 OBJECTIVE</h3>
-                        <p>Govern a futuristic city for as long as possible. Balance four critical metrics while making
-                            tough decisions. How many years can you survive?</p>
+                        <p>Govern the city as long as possible. Balance 4 metrics. Survive.</p>
                     </section>
 
                     <section>
                         <h3>📊 METRICS</h3>
-                        <ul>
-                            <li><strong>STABILITY:</strong> Public order and safety. Low = fires and chaos</li>
-                            <li><strong>ECONOMY:</strong> Financial health. Affects traffic and flying vehicles</li>
-                            <li><strong>ECO-SYS:</strong> Environmental quality. Affects sky color and pollution</li>
-                            <li><strong>TRUST:</strong> Public confidence. Low = surveillance drones</li>
-                        </ul>
+                        <div class="mechanics-grid">
+                            <div class="mech-item">
+                                <span class="icon">🛡️</span>
+                                <span class="label">STABILITY</span>
+                                <span class="desc">Order & Safety</span>
+                            </div>
+                            <div class="mech-item">
+                                <span class="icon">📈</span>
+                                <span class="label">ECONOMY</span>
+                                <span class="desc">Wealth & Growth</span>
+                            </div>
+                            <div class="mech-item">
+                                <span class="icon">🌱</span>
+                                <span class="label">ECO-SYS</span>
+                                <span class="desc">Nature & Health</span>
+                            </div>
+                            <div class="mech-item">
+                                <span class="icon">🤝</span>
+                                <span class="label">TRUST</span>
+                                <span class="desc">Public Faith</span>
+                            </div>
+                        </div>
+
+                        <div
+                            style="margin-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem;">
+                            <h4 style="color: var(--neon-purple); text-align: center; margin-bottom: 0.5rem;">🌌 DRIFT
+                                MANIFESTATIONS</h4>
+                            <p style="font-size: 0.8rem; color: #aaa; text-align: center;">Drift events occur when
+                                hidden risks (Climate, Tech, Unrest) exceed 60%. Each type has unique visual distortions
+                                and permanent consequences.</p>
+                        </div>
                     </section>
 
                     <section>
-                        <h3>⚡ GAMEPLAY</h3>
-                        <ul>
-                            <li>Each turn presents a <strong>decision</strong> with 2 choices</li>
-                            <li>Every choice affects multiple metrics (+ or -)</li>
-                            <li>Penalties increase over time (progressive difficulty)</li>
-                            <li>Watch for <strong>crisis events</strong> (⚠️) and <strong>recovery
-                                    opportunities</strong> (❤️‍🩹)</li>
-                        </ul>
+                        <h3>📊 EVENT TYPES & IMPACT</h3>
+                        <div class="mechanics-grid">
+                            <div class="mech-item">
+                                <span class="icon">📄</span>
+                                <span class="label">NORMAL</span>
+                                <span class="value" style="color: var(--primary-cyan)">+/- 5-15%</span>
+                            </div>
+                            <div class="mech-item">
+                                <span class="icon">❤️‍🩹</span>
+                                <span class="label">RECOVERY</span>
+                                <span class="value" style="color: var(--success-green)">+15-25%</span>
+                            </div>
+                            <div class="mech-item">
+                                <span class="icon">⚠️</span>
+                                <span class="label">CRISIS</span>
+                                <span class="value" style="color: var(--alert-red)">-20-30%</span>
+                            </div>
+                            <div class="mech-item">
+                                <span class="icon">🔮</span>
+                                <span class="label">DRIFT</span>
+                                <span class="value" style="color: var(--neon-purple)">-20-30%</span>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section>
+                        <h3>⚙️ DIFFICULTY SCALING</h3>
+                        <div class="mechanics-grid" style="grid-template-columns: repeat(3, 1fr);">
+                            <div class="mech-item">
+                                <span class="icon">📈</span>
+                                <span class="label">BASE</span>
+                                <span class="value">1.0x</span>
+                                <span class="desc">Starts in 2030</span>
+                            </div>
+                            <div class="mech-item">
+                                <span class="icon">🔥</span>
+                                <span class="label">SCALING</span>
+                                <span class="value">+0.1x</span>
+                                <span class="desc">Every 2 Years</span>
+                            </div>
+                            <div class="mech-item">
+                                <span class="icon">⛔</span>
+                                <span class="label">CAP</span>
+                                <span class="value">2.0x</span>
+                                <span class="desc">Double Damage</span>
+                            </div>
+                        </div>
                     </section>
 
                     <section>
                         <h3>🔍 TOOLS</h3>
-                        <ul>
-                            <li><strong>📟 Scanner:</strong> View hidden weights and event triggers</li>
-                            <li><strong>❤️‍🩹 Recovery:</strong> See positive events that help struggling metrics</li>
-                            <li><strong>⚠️ Crisis Database:</strong> Browse all possible crisis events</li>
-                            <li><strong>🔊 Mute:</strong> Toggle sound effects</li>
-                        </ul>
+                        <div class="mechanics-grid">
+                            <div class="mech-item">
+                                <span class="icon">📟</span>
+                                <span class="label">SCANNER</span>
+                                <span class="desc">View hidden weights</span>
+                            </div>
+                            <div class="mech-item">
+                                <span class="icon">❤️‍🩹</span>
+                                <span class="label">RECOVERY</span>
+                                <span class="desc">Find hope in crisis</span>
+                            </div>
+                            <div class="mech-item">
+                                <span class="icon">⚠️</span>
+                                <span class="label">DATABASE</span>
+                                <span class="desc">Browse all threats</span>
+                            </div>
+                            <div class="mech-item">
+                                <span class="icon">🔊</span>
+                                <span class="label">AUDIO</span>
+                                <span class="desc">Toggle SFX</span>
+                            </div>
+                        </div>
                     </section>
 
                     <section>
@@ -298,7 +441,10 @@
                         <span class="value">50%</span>
                     </div>
                 </div>
-                <div class="year-display">YEAR: <span id="year-count">2030</span></div>
+                <div class="year-display">
+                    YEAR: <span id="year-count">2030</span>
+                    <div id="difficulty-display" class="diff-tag">RISK: 1.4x</div>
+                </div>
             </header>
 
             <!-- Middle: Visualization -->
