@@ -21,7 +21,6 @@ class LeaderboardSystem {
                     });
                 }
             });
-            console.log("Leaderboard: Fetched raw scores:", scores);
             return scores;
         } catch (error) {
             console.error("Leaderboard fetch error:", error);
@@ -38,9 +37,7 @@ class LeaderboardSystem {
 
         container.innerHTML = '<div class="loading-spinner">LOADING DATA...</div>';
 
-        console.log("Leaderboard: Starting render...");
         const data = await this.getLeaderboard();
-        console.log("Leaderboard: Data to render:", data);
         container.innerHTML = '';
 
         if (data && data.error) {

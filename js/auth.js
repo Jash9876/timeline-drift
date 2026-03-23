@@ -277,7 +277,6 @@ class AuthSystem {
                 this.currentUser.gamesPlayed = newGamesPlayed;
                 this.currentUser.highScore = newHighScore;
             });
-            console.log('Stats saved to cloud.');
         } catch (e) {
             console.error("Failed to save stats to Firebase:", e);
             // Fallback: save locally
