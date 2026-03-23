@@ -1052,6 +1052,26 @@ canvas {
     text-align: right;
 }
 
+.empty-state, .loading-spinner {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--text-dim);
+    font-family: var(--font-header);
+    letter-spacing: 2px;
+    font-size: 1.1rem;
+    opacity: 0.7;
+}
+
+.loading-spinner {
+    color: var(--primary-cyan);
+    animation: pulse-loading 1.5s infinite ease-in-out;
+}
+
+@keyframes pulse-loading {
+    0%, 100% { opacity: 0.4; transform: scale(0.98); }
+    50% { opacity: 1; transform: scale(1); }
+}
+
 /* --- Visualizer Visibility --- */
 /* Hide by default in game interface */
 #game-interface #visualizer-container {
