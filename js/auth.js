@@ -258,7 +258,10 @@ class AuthSystem {
         try {
             await db.runTransaction(async (transaction) => {
                 const doc = await transaction.get(userRef);
-                if (!doc.exists) return;
+                if (!doc.exists) {
+                     console.warn("Auth: Cannot update stats, user document missing.");
+                     return;
+                }
 
                 const data = doc.data();
                 const newGamesPlayed = (data.gamesPlayed || 0) + 1;
@@ -276,7 +279,10 @@ class AuthSystem {
             });
             console.log('Stats saved to cloud.');
         } catch (e) {
-            console.error("Failed to save stats:", e);
+            console.error("Failed to save stats to Firebase:", e);
+            // Fallback: save locally
+            this.currentUser.highScore = Math.max(this.currentUser.highScore || 0, score);
+            localStorage.setItem('timeline_offline_user', JSON.stringify(this.currentUser));
         }
     }
 }

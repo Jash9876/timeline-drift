@@ -22,8 +22,11 @@ class LeaderboardSystem {
                 }
             });
             console.log("Leaderboard: Fetched raw scores:", scores);
+            return scores;
         } catch (error) {
             console.error("Leaderboard fetch error:", error);
+            // Return error object to be handled by render
+            return { error: error.message };
         }
         return scores;
     }
@@ -40,7 +43,16 @@ class LeaderboardSystem {
         console.log("Leaderboard: Data to render:", data);
         container.innerHTML = '';
 
-        if (data.length === 0) {
+        if (data && data.error) {
+            container.innerHTML = `<div class="empty-state error-state">
+                <span class="icon">⚠️</span>
+                <p>Failed to connect to Neural Link.</p>
+                <small>${data.error}</small>
+            </div>`;
+            return;
+        }
+
+        if (!data || data.length === 0) {
             container.innerHTML = '<div class="empty-state">No records yet. Be the first!</div>';
             return;
         }
