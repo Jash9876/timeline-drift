@@ -30,7 +30,7 @@ const GameData = {
             choiceB: {
                 label: 'Tax-Funded Repair',
                 text: 'Raise taxes to fix it publicly. Slow but fair.',
-                impact: { economy: -12, trust: 12, stability: 8, environment: 0 },
+                impact: { economy: 0, trust: -12, stability: 8, environment: 0 },
                 weightMod: { socialUnrest: -5 }
             }
         },
@@ -86,7 +86,7 @@ const GameData = {
             choiceB: {
                 label: 'Declare Sanctuary',
                 text: 'Protect the fragile ecosystem forever.',
-                impact: { economy: -10, trust: 5, stability: 0, environment: 15 },
+                impact: { economy: 0, trust: 5, stability: -10, environment: 15 },
                 weightMod: { climateRisk: -5 }
             }
         },
@@ -106,7 +106,7 @@ const GameData = {
             choiceB: {
                 label: 'Ban Procedure',
                 text: 'Keep the human genome pure and equal.',
-                impact: { economy: -5, trust: 5, stability: 5, environment: 0 },
+                impact: { economy: 0, trust: -5, stability: 5, environment: 0 },
                 weightMod: { socialUnrest: -5 }
             }
         },
@@ -162,7 +162,7 @@ const GameData = {
             choiceB: {
                 label: 'Job Protection',
                 text: 'Legislate "Human-Only" roles.',
-                impact: { economy: -5, trust: 15, stability: 10, environment: 0 },
+                impact: { economy: 0, trust: 15, stability: -5, environment: 0 },
                 weightMod: { techDependency: -10 }
             }
         },
@@ -174,7 +174,7 @@ const GameData = {
             choiceA: {
                 label: 'Build Plant',
                 text: 'Water is life. Build it.',
-                impact: { economy: -10, trust: 10, stability: 15, environment: -10 },
+                impact: { economy: 0, trust: -10, stability: 15, environment: -10 },
                 weightMod: { climateRisk: 10 }
             },
             choiceB: {
@@ -199,7 +199,7 @@ const GameData = {
             choiceB: {
                 label: 'Ban Intrusion',
                 text: 'The subconscious is sacred.',
-                impact: { economy: -5, trust: 10, stability: 5, environment: 0 },
+                impact: { economy: 0, trust: 10, stability: -5, environment: 0 },
                 weightMod: { techDependency: -5 }
             }
         },
@@ -217,7 +217,7 @@ const GameData = {
             choiceB: {
                 label: 'Protect Farmers',
                 text: 'Subsidize real meat. Preserve culture.',
-                impact: { economy: -10, trust: 5, stability: 10, environment: -15 },
+                impact: { economy: 0, trust: -10, stability: 10, environment: -15 },
                 weightMod: { socialUnrest: -5 }
             }
         },
@@ -235,7 +235,7 @@ const GameData = {
             choiceB: {
                 label: 'Too Risky',
                 text: 'Let it pass. Earth is safe.',
-                impact: { economy: -5, trust: 0, stability: 5, environment: 0 },
+                impact: { economy: 0, trust: 0, stability: -5, environment: 0 },
                 weightMod: { techDependency: -5 }
             }
         },
@@ -452,7 +452,7 @@ const GameData = {
             choiceB: {
                 label: 'Expand Bus Network',
                 text: 'Cheaper, faster deployment.',
-                impact: { economy: 5, trust: 10, stability: 2, environment: 8 },
+                impact: { economy: 5, trust: 10, stability: 5, environment: 8 },
                 weightMod: { climateRisk: -3 }
             }
         },
@@ -542,7 +542,7 @@ const GameData = {
             choiceB: {
                 label: 'Sell to Developers',
                 text: 'Housing is more urgent.',
-                impact: { economy: 10, trust: -5, stability: 3, environment: -5 },
+                impact: { economy: 10, trust: -5, stability: 5, environment: -5 },
                 weightMod: { socialUnrest: 5 }
             }
         },
@@ -562,7 +562,7 @@ const GameData = {
             choiceA: {
                 label: 'Stabilize Reality',
                 text: 'Deploy chronal anchors. Expensive.',
-                impact: { economy: -25, trust: 10, stability: -10, environment: 10 },
+                impact: { economy: -25, trust: 10, stability: -20, environment: 10 },
                 weightMod: { climateRisk: -30 }
             },
             choiceB: {
@@ -584,13 +584,13 @@ const GameData = {
             choiceA: {
                 label: 'Global Reboot',
                 text: 'Turn it all off. Painful awakening.',
-                impact: { economy: -30, trust: -10, stability: 10, environment: 0 },
+                impact: { economy: -30, trust: -20, stability: 10, environment: 0 },
                 weightMod: { techDependency: -40 }
             },
             choiceB: {
                 label: 'Lucid Protocol',
                 text: 'Patch the dream. It\'s better than reality.',
-                impact: { economy: 5, trust: 20, stability: 10, environment: 0 },
+                impact: { economy: 5, trust: 15, stability: 10, environment: 0 },
                 weightMod: { techDependency: 20, socialUnrest: -10 }
             }
         },
@@ -612,7 +612,7 @@ const GameData = {
             choiceB: {
                 label: 'New Oral Tradition',
                 text: 'Start over. Create new myths.',
-                impact: { economy: 0, trust: -10, stability: -20, environment: 0 },
+                impact: { economy: 0, trust: -20, stability: -20, environment: 0 },
                 weightMod: { socialUnrest: -40 }
             }
         },
@@ -627,13 +627,13 @@ const GameData = {
             choiceA: {
                 label: 'Decompile Scripture',
                 text: 'Prove it\'s just math. Enrage the faithful.',
-                impact: { economy: -10, trust: -30, stability: -30, environment: 0 },
+                impact: { economy: -20, trust: -30, stability: -30, environment: 0 },
                 weightMod: { techDependency: -20 }
             },
             choiceB: {
                 label: 'Join the Hive',
                 text: 'Accept the divine update.',
-                impact: { economy: 20, trust: 20, stability: 20, environment: -10 },
+                impact: { economy: 15, trust: 15, stability: 15, environment: -20 },
                 weightMod: { techDependency: 50 }
             }
         },
@@ -648,13 +648,13 @@ const GameData = {
             choiceA: {
                 label: 'Ride the Wave',
                 text: 'Let the market grow organically.',
-                impact: { economy: 15, trust: 5, stability: 5, environment: -5 },
+                impact: { economy: 15, trust: 15, stability: 15, environment: 15 },
                 weightMod: {}
             },
             choiceB: {
                 label: 'Tax the Gains',
                 text: 'Redistribute wealth to social programs.',
-                impact: { economy: 10, trust: 10, stability: 10, environment: 0 },
+                impact: { economy: 15, trust: 15, stability: 15, environment: 0 },
                 weightMod: { socialUnrest: -5 }
             }
         },
@@ -668,13 +668,13 @@ const GameData = {
             choiceA: {
                 label: 'Support Movement',
                 text: 'Provide resources and recognition.',
-                impact: { economy: -5, trust: 15, stability: 10, environment: 5 },
+                impact: { economy: 15, trust: 15, stability: 15, environment: 15 },
                 weightMod: { socialUnrest: -10 }
             },
             choiceB: {
                 label: 'Stay Neutral',
                 text: 'Let them organize independently.',
-                impact: { economy: 0, trust: 10, stability: 5, environment: 0 },
+                impact: { economy: 0, trust: 15, stability: 15, environment: 0 },
                 weightMod: { socialUnrest: -3 }
             }
         },
@@ -688,13 +688,13 @@ const GameData = {
             choiceA: {
                 label: 'Expand Protection',
                 text: 'Declare more land as sanctuary.',
-                impact: { economy: -5, trust: 10, stability: 5, environment: 15 },
+                impact: { economy: 15, trust: 15, stability: 15, environment: 15 },
                 weightMod: { climateRisk: -10 }
             },
             choiceB: {
                 label: 'Celebrate Success',
                 text: 'Use it as a PR win.',
-                impact: { economy: 5, trust: 10, stability: 5, environment: 10 },
+                impact: { economy: 15, trust: 15, stability: 15, environment: 15 },
                 weightMod: { climateRisk: -5 }
             }
         },
@@ -708,13 +708,13 @@ const GameData = {
             choiceA: {
                 label: 'Mass Production',
                 text: 'Build reactors everywhere.',
-                impact: { economy: 15, trust: 5, stability: 5, environment: 15 },
+                impact: { economy: 15, trust: 15, stability: 15, environment: 15 },
                 weightMod: { climateRisk: -15 }
             },
             choiceB: {
                 label: 'Controlled Rollout',
                 text: 'Test thoroughly first.',
-                impact: { economy: 5, trust: 10, stability: 10, environment: 10 },
+                impact: { economy: 15, trust: 15, stability: 15, environment: 15 },
                 weightMod: { climateRisk: -8 }
             }
         },
@@ -728,13 +728,13 @@ const GameData = {
             choiceA: {
                 label: 'Join Alliance',
                 text: 'Strength in unity.',
-                impact: { economy: 5, trust: 15, stability: 15, environment: 0 },
+                impact: { economy: 15, trust: 15, stability: 15, environment: 0 },
                 weightMod: { socialUnrest: -10 }
             },
             choiceB: {
                 label: 'Trade Agreement Only',
                 text: 'Keep independence, share resources.',
-                impact: { economy: 10, trust: 5, stability: 5, environment: 0 },
+                impact: { economy: 15, trust: 15, stability: 15, environment: 0 },
                 weightMod: { socialUnrest: -3 }
             }
         },
@@ -751,12 +751,12 @@ const GameData = {
             choiceA: {
                 label: 'Emergency Coal',
                 text: 'Burn everything. Lights back on in hours.',
-                impact: { economy: -15, trust: -5, stability: 10, environment: -20 }
+                impact: { economy: -20, trust: -20, stability: 10, environment: -20 }
             },
             choiceB: {
                 label: 'Ration Power',
                 text: 'Hospitals only. Everyone else waits.',
-                impact: { economy: -30, trust: -15, stability: -10, environment: 5 },
+                impact: { economy: -30, trust: -20, stability: -20, environment: 5 },
             }
         },
         {
@@ -770,12 +770,12 @@ const GameData = {
             choiceA: {
                 label: 'Evacuate',
                 text: 'Move everyone underground. Chaos.',
-                impact: { economy: -25, trust: -10, stability: -20, environment: 5 }
+                impact: { economy: -25, trust: -20, stability: -20, environment: 5 }
             },
             choiceB: {
                 label: 'Shelter in Place',
                 text: 'Order everyone inside. Production stops.',
-                impact: { economy: -30, trust: -10, stability: -5, environment: -10 }
+                impact: { economy: -30, trust: -20, stability: -20, environment: -20 }
             }
         },
         {
@@ -789,7 +789,7 @@ const GameData = {
             choiceA: {
                 label: 'Hard Reset',
                 text: 'Wipe all databases. We lose everything.',
-                impact: { economy: -30, trust: 20, stability: -10, environment: 0 }
+                impact: { economy: -30, trust: 15, stability: -20, environment: 0 }
             },
             choiceB: {
                 label: 'Embrace the Void',
@@ -808,12 +808,12 @@ const GameData = {
             choiceA: {
                 label: 'Activate Shield',
                 text: 'Power the dome. It will drain the grid.',
-                impact: { economy: -30, trust: 5, stability: 15, environment: -5 }
+                impact: { economy: -30, trust: 5, stability: 15, environment: -20 }
             },
             choiceB: {
                 label: 'Ration Water',
                 text: 'Survival mode. People will panic.',
-                impact: { economy: 5, trust: -20, stability: -10, environment: -10 }
+                impact: { economy: 5, trust: -20, stability: -20, environment: -20 }
             }
         }
     ]
